@@ -7,11 +7,10 @@
 	import File from 'lucide-svelte/icons/file';
 	import Home from 'lucide-svelte/icons/house';
 	import KeyRound from 'lucide-svelte/icons/key-round';
-	import ListFilter from 'lucide-svelte/icons/list-filter';
+	import Network from 'lucide-svelte/icons/network';
 	import PanelLeft from 'lucide-svelte/icons/panel-left';
 	import Search from 'lucide-svelte/icons/search';
 	import Settings from 'lucide-svelte/icons/settings';
-	import Truck from 'lucide-svelte/icons/truck';
 	import UserRound from 'lucide-svelte/icons/user-round';
 	import UsersRound from 'lucide-svelte/icons/users-round';
 
@@ -94,7 +93,7 @@
 				<DropdownMenu.Item class="cursor-pointer">Settings</DropdownMenu.Item>
 				<DropdownMenu.Item class="cursor-pointer">Support</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item class="cursor-pointer">Logout</DropdownMenu.Item>
+				<a href="/"><DropdownMenu.Item class="cursor-pointer">Logout</DropdownMenu.Item></a>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</header>
@@ -142,21 +141,6 @@
 						<Tabs.Trigger value="inactive">Inactive</Tabs.Trigger>
 					</Tabs.List>
 					<div class="ml-auto flex items-center gap-2">
-						<DropdownMenu.Root>
-							<DropdownMenu.Trigger asChild let:builder>
-								<Button variant="outline" size="sm" class="h-7 gap-1 text-sm" builders={[builder]}>
-									<ListFilter class="h-3.5 w-3.5" />
-									<span class="sr-only sm:not-sr-only">Filter</span>
-								</Button>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Content align="end">
-								<DropdownMenu.Label>Filter by</DropdownMenu.Label>
-								<DropdownMenu.Separator />
-								<DropdownMenu.CheckboxItem checked>Fulfilled</DropdownMenu.CheckboxItem>
-								<DropdownMenu.CheckboxItem>Declined</DropdownMenu.CheckboxItem>
-								<DropdownMenu.CheckboxItem>Refunded</DropdownMenu.CheckboxItem>
-							</DropdownMenu.Content>
-						</DropdownMenu.Root>
 						<Button size="sm" variant="outline" class="h-7 gap-1 text-sm">
 							<File class="h-3.5 w-3.5" />
 							<span class="sr-only sm:not-sr-only">Export</span>
@@ -166,132 +150,39 @@
 				<Tabs.Content value="all">
 					<Card.Root>
 						<Card.Header class="px-7">
-							<Card.Title>Orders</Card.Title>
-							<Card.Description>Recent orders from your store.</Card.Description>
+							<Card.Title>Servers</Card.Title>
+							<Card.Description>All servers whether active or inactive</Card.Description>
 						</Card.Header>
 						<Card.Content>
 							<Table.Root>
 								<Table.Header>
 									<Table.Row>
-										<Table.Head>Customer</Table.Head>
-										<Table.Head class="hidden sm:table-cell">Type</Table.Head>
+										<Table.Head>Hostname</Table.Head>
+										<Table.Head class="hidden sm:table-cell">IP Address</Table.Head>
 										<Table.Head class="hidden sm:table-cell">Status</Table.Head>
-										<Table.Head class="hidden md:table-cell">Date</Table.Head>
-										<Table.Head class="text-right">Amount</Table.Head>
+										<Table.Head class="text-right">Stale (secs)</Table.Head>
 									</Table.Row>
 								</Table.Header>
 								<Table.Body>
 									<Table.Row class="bg-accent">
 										<Table.Cell>
-											<div class="font-medium">Liam Johnson</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												liam@example.com
-											</div>
+											<div class="font-medium">edify-rest</div>
 										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Sale</Table.Cell>
+										<Table.Cell class="hidden sm:table-cell">10.56.57.58</Table.Cell>
 										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="secondary">Fulfilled</Badge>
+											<Badge class="text-xs" variant="secondary">Active</Badge>
 										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-23</Table.Cell>
-										<Table.Cell class="text-right">$250.00</Table.Cell>
+										<Table.Cell class="text-right">15 secs</Table.Cell>
 									</Table.Row>
 									<Table.Row>
 										<Table.Cell>
-											<div class="font-medium">Olivia Smith</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												olivia@example.com
-											</div>
+											<div class="font-medium">edify-database</div>
 										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Refund</Table.Cell>
+										<Table.Cell class="hidden sm:table-cell">10.56.57.59</Table.Cell>
 										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="outline">Declined</Badge>
+											<Badge class="text-xs" variant="outline">Inactive</Badge>
 										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-24</Table.Cell>
-										<Table.Cell class="text-right">$150.00</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<div class="font-medium">Noah Williams</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												noah@example.com
-											</div>
-										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Subscription</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="secondary">Fulfilled</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-25</Table.Cell>
-										<Table.Cell class="text-right">$350.00</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<div class="font-medium">Emma Brown</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												emma@example.com
-											</div>
-										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Sale</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="secondary">Fulfilled</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-26</Table.Cell>
-										<Table.Cell class="text-right">$450.00</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<div class="font-medium">Liam Johnson</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												liam@example.com
-											</div>
-										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Sale</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="secondary">Fulfilled</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-23</Table.Cell>
-										<Table.Cell class="text-right">$250.00</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<div class="font-medium">Liam Johnson</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												liam@example.com
-											</div>
-										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Sale</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="secondary">Fulfilled</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-23</Table.Cell>
-										<Table.Cell class="text-right">$250.00</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<div class="font-medium">Olivia Smith</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												olivia@example.com
-											</div>
-										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Refund</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="outline">Declined</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-24</Table.Cell>
-										<Table.Cell class="text-right">$150.00</Table.Cell>
-									</Table.Row>
-									<Table.Row>
-										<Table.Cell>
-											<div class="font-medium">Emma Brown</div>
-											<div class="hidden text-sm text-muted-foreground md:inline">
-												emma@example.com
-											</div>
-										</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">Sale</Table.Cell>
-										<Table.Cell class="hidden sm:table-cell">
-											<Badge class="text-xs" variant="secondary">Fulfilled</Badge>
-										</Table.Cell>
-										<Table.Cell class="hidden md:table-cell">2023-06-26</Table.Cell>
-										<Table.Cell class="text-right">$450.00</Table.Cell>
+										<Table.Cell class="text-right">18 days</Table.Cell>
 									</Table.Row>
 								</Table.Body>
 							</Table.Root>
@@ -305,7 +196,7 @@
 				<Card.Header class="flex flex-row items-start bg-muted/50">
 					<div class="grid gap-0.5">
 						<Card.Title class="group flex items-center gap-2 text-lg">
-							Order Oe31b70H
+							edify-rest
 							<Button
 								size="icon"
 								variant="outline"
@@ -315,12 +206,12 @@
 								<span class="sr-only">Copy Order ID</span>
 							</Button>
 						</Card.Title>
-						<Card.Description>Date: November 23, 2023</Card.Description>
+						<Card.Description>IP Address: 10.56.57.58</Card.Description>
 					</div>
 					<div class="ml-auto flex items-center gap-1">
 						<Button size="sm" variant="outline" class="h-8 gap-1">
-							<Truck class="h-3.5 w-3.5" />
-							<span class="lg:sr-only xl:not-sr-only xl:whitespace-nowrap"> Track Order </span>
+							<Network class="h-3.5 w-3.5" />
+							<span class="lg:sr-only xl:not-sr-only xl:whitespace-nowrap"> Copy IP </span>
 						</Button>
 						<DropdownMenu.Root>
 							<DropdownMenu.Trigger asChild let:builder>
