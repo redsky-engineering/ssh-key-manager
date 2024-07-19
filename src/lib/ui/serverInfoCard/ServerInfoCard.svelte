@@ -7,17 +7,21 @@
 	import Trash2 from 'lucide-svelte/icons/trash-2';
 
 	import AppUtils from '$lib/AppUtils.js';
-	import type { ServerData } from '$lib/types.js';
-	import { Button } from '$lib/ui/button/index.js';
+	import type { ServerData, UserData } from '$lib/types.js';
+	import { Button, buttonVariants } from '$lib/ui/button/index.js';
 	import * as Card from '$lib/ui/card/index.js';
+	import * as Dialog from '$lib/ui/dialog';
 	import * as DropdownMenu from '$lib/ui/dropdown-menu/index.js';
 	import * as Pagination from '$lib/ui/pagination/index.js';
+	import * as Select from '$lib/ui/select/index.js';
 	import { Separator } from '$lib/ui/separator/index.js';
+	import ButtonStack from '../buttonStack/ButtonStack.svelte';
 
 	interface Props {
 		serverInfo: ServerData;
+		users: UserData[];
 	}
-	let { serverInfo }: Props = $props();
+	let { serverInfo, users }: Props = $props();
 </script>
 
 <Card.Root class="overflow-hidden">
@@ -45,7 +49,7 @@
 				onclick={() => AppUtils.copyToClipboardWeb(serverInfo.ipAddress)}
 			>
 				<Network class="h-3.5 w-3.5" />
-				<span class="lg:sr-only xl:not-sr-only xl:whitespace-nowrap"> Copy IP </span>
+				<span class="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">Copy IP</span>
 			</Button>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild let:builder>
@@ -68,16 +72,16 @@
 			<div class="font-semibold">Health</div>
 			<ul class="grid gap-3">
 				<li class="flex items-center justify-between">
-					<span class="text-muted-foreground"> CPU Usage </span>
+					<span class="text-muted-foreground">CPU Usage</span>
 					<span>{serverInfo.cpuUsagePercent}%</span>
 				</li>
 				<li class="flex items-center justify-between">
-					<span class="text-muted-foreground"> RAM Usage </span>
-					<span> {serverInfo.memoryUsagePercent}% </span>
+					<span class="text-muted-foreground">RAM Usage</span>
+					<span>{serverInfo.memoryUsagePercent}%</span>
 				</li>
 				<li class="flex items-center justify-between">
-					<span class="text-muted-foreground"> Disk Usage </span>
-					<span> {serverInfo.diskUsagePercent}% </span>
+					<span class="text-muted-foreground">Disk Usage</span>
+					<span>{serverInfo.diskUsagePercent}%</span>
 				</li>
 			</ul>
 			<Separator class="my-2" />
@@ -89,15 +93,43 @@
 						<Trash2 class="h-4 w-4 cursor-pointer text-muted-foreground hover:text-red-300" />
 					</li>
 				{/each}
-				<Button variant="secondary" size="sm">Add User</Button>
+				<Dialog.Root>
+					<Dialog.Trigger class={buttonVariants({ variant: 'secondary', size: 'sm' })}>
+						Add User
+					</Dialog.Trigger>
+					<Dialog.Content class="w-[90%] max-w-sm">
+						<Dialog.Header>
+							<Dialog.Title>Who do you want to add?</Dialog.Title>
+							<Dialog.Description class="p-2">
+								<Select.Root portal={null}>
+									<Select.Trigger class="w-[180px]">
+										<Select.Value placeholder="Select a user" />
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Group>
+											{#each users as user}
+												<Select.Item value={user.id} label={user.name}>{user.name}</Select.Item>
+											{/each}
+										</Select.Group>
+									</Select.Content>
+									<Select.Input name="favoriteFruit" />
+								</Select.Root>
+							</Dialog.Description>
+						</Dialog.Header>
+						<Dialog.Footer class="mt-16">
+							<ButtonStack>
+								<Button class="w-full">Cancel</Button>
+								<Button class="w-full" variant="destructive">Add Users</Button>
+							</ButtonStack>
+						</Dialog.Footer>
+					</Dialog.Content>
+				</Dialog.Root>
 			</ul>
 		</div>
 	</Card.Content>
 	<Card.Footer class="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
 		<div class="text-xs text-muted-foreground">
-			Updated <time dateTime="2024-07-15T10:01:03"
-				>{AppUtils.getRelativeTime(serverInfo.lastHeartbeatOn)}</time
-			>
+			Updated <time dateTime="2024-07-15T10:01:03">{AppUtils.getRelativeTime(serverInfo.lastHeartbeatOn)}</time>
 		</div>
 		<Pagination.Root count={10} class="ml-auto mr-0 w-auto">
 			<Pagination.Content>

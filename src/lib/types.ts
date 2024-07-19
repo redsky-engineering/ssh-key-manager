@@ -11,3 +11,8 @@ export interface ServerData {
 		name: string;
 	}[];
 }
+
+export interface UserData {
+	id: number;
+	name: string;
+}

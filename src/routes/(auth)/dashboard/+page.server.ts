@@ -1,4 +1,4 @@
-import type { ServerData } from '$lib/types.js';
+import type { ServerData, UserData } from '$lib/types.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -200,7 +200,19 @@ export const load: PageServerLoad = async () => {
 		}
 	];
 
+	const users: UserData[] = [
+		{
+			id: 1,
+			name: 'Alice'
+		},
+		{
+			id: 2,
+			name: 'Bob'
+		}
+	];
+
 	return {
-		serverData: servers
+		servers,
+		users
 	};
 };

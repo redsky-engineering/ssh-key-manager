@@ -25,9 +25,15 @@
 
 	let { data }: { data: PageData } = $props();
 
-	let selectedServerId: number | null = $state(
-		data.serverData.length > 0 ? data.serverData[0].id : null
-	);
+	let selectedServerId: number | null = $state(data.servers.length > 0 ? data.servers[0].id : null);
+
+	let searchValue = $state('');
+
+	let filteredServers = $derived.by(() => {
+		return data.servers.filter((server) =>
+			server.name.toLowerCase().includes(searchValue.toLowerCase())
+		);
+	});
 </script>
 
 <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -74,11 +80,12 @@
 			</Sheet.Content>
 		</Sheet.Root>
 		<div class="relative ml-auto flex-1 md:grow-0">
-			<Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+			<Search class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search..."
 				class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+				bind:value={searchValue}
 			/>
 		</div>
 		<DropdownMenu.Root>
@@ -177,7 +184,7 @@
 									</Table.Row>
 								</Table.Header>
 								<Table.Body>
-									{#each data.serverData as server}
+									{#each filteredServers as server}
 										<Table.Row
 											class={cn('cursor-pointer', { 'bg-accent': server.id === selectedServerId })}
 											onclick={() => (selectedServerId = server.id)}
@@ -205,9 +212,8 @@
 		<div>
 			{#if selectedServerId !== null}
 				<ServerInfoCard
-					serverInfo={data.serverData.find(
-						(server) => server.id === selectedServerId
-					) as ServerData}
+					serverInfo={data.servers.find((server) => server.id === selectedServerId) as ServerData}
+					users={data.users}
 				/>
 			{:else}
 				<h3>No server selected</h3>
