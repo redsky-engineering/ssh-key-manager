@@ -101,7 +101,7 @@
 						<Dialog.Header>
 							<Dialog.Title>Who do you want to add?</Dialog.Title>
 							<Dialog.Description class="p-2">
-								<Select.Root portal={null}>
+								<Select.Root portal={null} multiple>
 									<Select.Trigger class="w-[180px]">
 										<Select.Value placeholder="Select a user" />
 									</Select.Trigger>

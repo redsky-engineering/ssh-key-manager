@@ -8,7 +8,7 @@ export const load: PageServerLoad = async () => {
 			id: 1,
 			name: 'Server1',
 			ipAddress: '192.168.1.1',
-			lastHeartbeatOn: '2024-07-16T12:00:00Z',
+			lastHeartbeatOn: '2024-07-20T00:16:00Z',
 			cpuUsagePercent: 45,
 			memoryUsagePercent: 70,
 			diskUsagePercent: 60,
