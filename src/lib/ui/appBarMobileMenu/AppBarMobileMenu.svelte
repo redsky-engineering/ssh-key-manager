@@ -58,7 +58,7 @@
 		<Input
 			type="search"
 			placeholder="Search..."
-			class="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+			class="clearSearch w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
 			bind:value={searchValue}
 		/>
 	</div>
@@ -76,3 +76,10 @@
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 </header>
+
+<style>
+	:global(.clearSearch::-webkit-search-cancel-button) {
+		font-size: 18px;
+		cursor: pointer;
+	}
+</style>

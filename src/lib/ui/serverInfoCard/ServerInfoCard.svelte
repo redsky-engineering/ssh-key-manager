@@ -15,13 +15,25 @@
 	import * as Pagination from '$lib/ui/pagination/index.js';
 	import * as Select from '$lib/ui/select/index.js';
 	import { Separator } from '$lib/ui/separator/index.js';
-	import ButtonStack from '../buttonStack/ButtonStack.svelte';
 
 	interface Props {
 		serverInfo: ServerData;
 		users: UserData[];
+		onNextServer: () => void;
+		onPreviousServer: () => void;
+		onAddUsersToServer: (userIds: string[]) => void;
 	}
-	let { serverInfo, users }: Props = $props();
+	let { serverInfo, users, onNextServer, onPreviousServer }: Props = $props();
+
+	let isAddToUsersDialogOpen = $state(false);
+	let userIdsToAdd = $state<number[]>([]);
+
+	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.users.find((id) => id === user.id)));
+
+	function handleAddUsersToServer() {
+		console.log('Adding users to server:', userIdsToAdd);
+		isAddToUsersDialogOpen = false;
+	}
 </script>
 
 <Card.Root class="overflow-hidden">
@@ -87,40 +99,43 @@
 			<Separator class="my-2" />
 			<div class="font-semibold">Users</div>
 			<ul class="grid gap-3">
-				{#each serverInfo.users as user}
-					<li class="flex items-center justify-between">
-						<span class="text-muted-foreground">{user.name}</span>
-						<Trash2 class="h-4 w-4 cursor-pointer text-muted-foreground hover:text-red-300" />
-					</li>
+				{#each serverInfo.users as userId}
+					{#if users.find((user) => user.id === userId)}
+						{@const user = users.find((user) => user.id === userId)}
+						<li class="flex items-center justify-between">
+							<span class="text-muted-foreground">{user!.name}</span>
+							<Trash2 class="h-4 w-4 cursor-pointer text-muted-foreground hover:text-red-300" />
+						</li>
+					{/if}
 				{/each}
-				<Dialog.Root>
+				<Dialog.Root closeOnOutsideClick={false} bind:open={isAddToUsersDialogOpen}>
 					<Dialog.Trigger class={buttonVariants({ variant: 'secondary', size: 'sm' })}>
 						Add User
 					</Dialog.Trigger>
 					<Dialog.Content class="w-[90%] max-w-sm">
 						<Dialog.Header>
-							<Dialog.Title>Who do you want to add?</Dialog.Title>
-							<Dialog.Description class="p-2">
+							<Dialog.Title class="mb-2">Who do you want to add?</Dialog.Title>
+							<Dialog.Description>
 								<Select.Root portal={null} multiple>
-									<Select.Trigger class="w-[180px]">
+									<Select.Trigger class="w-[100%]">
 										<Select.Value placeholder="Select a user" />
 									</Select.Trigger>
 									<Select.Content>
 										<Select.Group>
-											{#each users as user}
+											{#each usersAvailableToAdd as user}
 												<Select.Item value={user.id} label={user.name}>{user.name}</Select.Item>
 											{/each}
 										</Select.Group>
 									</Select.Content>
-									<Select.Input name="favoriteFruit" />
+									<Select.Input name="usersToAdd" bind:value={userIdsToAdd} />
 								</Select.Root>
 							</Dialog.Description>
 						</Dialog.Header>
-						<Dialog.Footer class="mt-16">
-							<ButtonStack>
-								<Button class="w-full">Cancel</Button>
-								<Button class="w-full" variant="destructive">Add Users</Button>
-							</ButtonStack>
+						<Dialog.Footer class="gap-2">
+							<Button class="w-full" variant="outline" onclick={() => (isAddToUsersDialogOpen = false)}>
+								Cancel
+							</Button>
+							<Button class="w-full" onclick={handleAddUsersToServer}>Add Users</Button>
 						</Dialog.Footer>
 					</Dialog.Content>
 				</Dialog.Root>
@@ -134,13 +149,13 @@
 		<Pagination.Root count={10} class="ml-auto mr-0 w-auto">
 			<Pagination.Content>
 				<Pagination.Item>
-					<Button size="icon" variant="outline" class="h-6 w-6">
+					<Button size="icon" variant="outline" class="h-6 w-6" onclick={onPreviousServer}>
 						<ChevronLeft class="h-3.5 w-3.5" />
 						<span class="sr-only">Previous Server</span>
 					</Button>
 				</Pagination.Item>
 				<Pagination.Item>
-					<Button size="icon" variant="outline" class="h-6 w-6">
+					<Button size="icon" variant="outline" class="h-6 w-6" onclick={onNextServer}>
 						<ChevronRight class="h-3.5 w-3.5" />
 						<span class="sr-only">Next Server</span>
 					</Button>

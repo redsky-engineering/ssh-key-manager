@@ -5,6 +5,6 @@
 	let { class: className, children }: { class?: string; children: Snippet } = $props();
 </script>
 
-<div class={cn(className, 'grid grid-cols-2 gap-16')}>
+<div class={cn(className, 'grid grid-cols-2 gap-4')}>
 	{@render children()}
 </div>

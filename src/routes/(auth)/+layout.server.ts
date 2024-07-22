@@ -1,7 +1,7 @@
 import type { ServerData, UserData } from '$lib/types.js';
-import type { PageServerLoad } from './$types';
+import type { LayoutServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: LayoutServerLoad = async () => {
 	// Create some fake server data
 	const servers: ServerData[] = [
 		{
@@ -12,11 +12,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 45,
 			memoryUsagePercent: 70,
 			diskUsagePercent: 60,
-			users: [
-				{ id: 1, name: 'Alice' },
-				{ id: 2, name: 'Bob' },
-				{ id: 3, name: 'Charlie' }
-			]
+			users: [1, 2, 3]
 		},
 		{
 			id: 2,
@@ -26,10 +22,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 55,
 			memoryUsagePercent: 65,
 			diskUsagePercent: 75,
-			users: [
-				{ id: 1, name: 'Dave' },
-				{ id: 2, name: 'Eve' }
-			]
+			users: [1, 2]
 		},
 		{
 			id: 3,
@@ -39,12 +32,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 35,
 			memoryUsagePercent: 50,
 			diskUsagePercent: 40,
-			users: [
-				{ id: 1, name: 'Frank' },
-				{ id: 2, name: 'Grace' },
-				{ id: 3, name: 'Hank' },
-				{ id: 4, name: 'Ivy' }
-			]
+			users: []
 		},
 		{
 			id: 4,
@@ -54,10 +42,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 25,
 			memoryUsagePercent: 45,
 			diskUsagePercent: 55,
-			users: [
-				{ id: 1, name: 'Jack' },
-				{ id: 2, name: 'Kim' }
-			]
+			users: [1, 2]
 		},
 		{
 			id: 5,
@@ -67,11 +52,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 65,
 			memoryUsagePercent: 80,
 			diskUsagePercent: 85,
-			users: [
-				{ id: 1, name: 'Leo' },
-				{ id: 2, name: 'Mona' },
-				{ id: 3, name: 'Nina' }
-			]
+			users: [3, 4]
 		},
 		{
 			id: 6,
@@ -81,7 +62,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 50,
 			memoryUsagePercent: 60,
 			diskUsagePercent: 70,
-			users: [{ id: 1, name: 'Oscar' }]
+			users: [1]
 		},
 		{
 			id: 7,
@@ -91,10 +72,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 30,
 			memoryUsagePercent: 55,
 			diskUsagePercent: 65,
-			users: [
-				{ id: 1, name: 'Pam' },
-				{ id: 2, name: 'Quinn' }
-			]
+			users: [5, 6]
 		},
 		{
 			id: 8,
@@ -104,11 +82,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 40,
 			memoryUsagePercent: 50,
 			diskUsagePercent: 60,
-			users: [
-				{ id: 1, name: 'Ray' },
-				{ id: 2, name: 'Sue' },
-				{ id: 3, name: 'Tom' }
-			]
+			users: [2, 4, 6]
 		},
 		{
 			id: 9,
@@ -118,7 +92,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 70,
 			memoryUsagePercent: 75,
 			diskUsagePercent: 80,
-			users: [{ id: 1, name: 'Uma' }]
+			users: []
 		},
 		{
 			id: 10,
@@ -128,10 +102,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 60,
 			memoryUsagePercent: 65,
 			diskUsagePercent: 55,
-			users: [
-				{ id: 1, name: 'Vic' },
-				{ id: 2, name: 'Wes' }
-			]
+			users: []
 		},
 		{
 			id: 11,
@@ -141,10 +112,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 20,
 			memoryUsagePercent: 30,
 			diskUsagePercent: 40,
-			users: [
-				{ id: 1, name: 'Xander' },
-				{ id: 2, name: 'Yara' }
-			]
+			users: []
 		},
 		{
 			id: 12,
@@ -154,7 +122,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 45,
 			memoryUsagePercent: 55,
 			diskUsagePercent: 65,
-			users: [{ id: 1, name: 'Zane' }]
+			users: []
 		},
 		{
 			id: 13,
@@ -164,11 +132,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 35,
 			memoryUsagePercent: 50,
 			diskUsagePercent: 60,
-			users: [
-				{ id: 1, name: 'Amy' },
-				{ id: 2, name: 'Brian' },
-				{ id: 3, name: 'Cathy' }
-			]
+			users: []
 		},
 		{
 			id: 14,
@@ -178,12 +142,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 50,
 			memoryUsagePercent: 65,
 			diskUsagePercent: 75,
-			users: [
-				{ id: 1, name: 'David' },
-				{ id: 2, name: 'Eva' },
-				{ id: 3, name: 'Frank' },
-				{ id: 4, name: 'Grace' }
-			]
+			users: []
 		},
 		{
 			id: 15,
@@ -193,10 +152,7 @@ export const load: PageServerLoad = async () => {
 			cpuUsagePercent: 55,
 			memoryUsagePercent: 60,
 			diskUsagePercent: 65,
-			users: [
-				{ id: 1, name: 'Hank' },
-				{ id: 2, name: 'Ivy' }
-			]
+			users: []
 		}
 	];
 
@@ -208,7 +164,11 @@ export const load: PageServerLoad = async () => {
 		{
 			id: 2,
 			name: 'Bob'
-		}
+		},
+		{ id: 3, name: 'David' },
+		{ id: 4, name: 'Eva' },
+		{ id: 5, name: 'Frank' },
+		{ id: 6, name: 'Grace' }
 	];
 
 	return {

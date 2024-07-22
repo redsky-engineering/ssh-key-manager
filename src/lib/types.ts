@@ -6,10 +6,7 @@ export interface ServerData {
 	cpuUsagePercent: number;
 	memoryUsagePercent: number;
 	diskUsagePercent: number;
-	users: {
-		id: number;
-		name: string;
-	}[];
+	users: number[];
 }
 
 export interface UserData {

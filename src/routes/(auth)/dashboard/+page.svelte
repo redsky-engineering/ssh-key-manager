@@ -17,6 +17,7 @@
 	let { data }: { data: PageData } = $props();
 
 	let selectedServerId: number | null = $state(data.servers.length > 0 ? data.servers[0].id : null);
+	$inspect(selectedServerId);
 
 	let searchValue = $state('');
 
@@ -105,6 +106,14 @@
 				<ServerInfoCard
 					serverInfo={data.servers.find((server) => server.id === selectedServerId) as ServerData}
 					users={data.users}
+					onNextServer={() => {
+						const index = data.servers.findIndex((server) => server.id === selectedServerId);
+						selectedServerId = data.servers[(index + 1) % data.servers.length].id;
+					}}
+					onPreviousServer={() => {
+						const index = data.servers.findIndex((server) => server.id === selectedServerId);
+						selectedServerId = data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
+					}}
 				/>
 			{:else}
 				<h3>No server selected</h3>
