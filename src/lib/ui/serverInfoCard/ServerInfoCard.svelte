@@ -21,9 +21,9 @@
 		users: UserData[];
 		onNextServer: () => void;
 		onPreviousServer: () => void;
-		onAddUsersToServer: (userIds: string[]) => void;
+		onAddUsersToServer: (userIds: number[]) => void;
 	}
-	let { serverInfo, users, onNextServer, onPreviousServer }: Props = $props();
+	let { serverInfo, users, onNextServer, onPreviousServer, onAddUsersToServer }: Props = $props();
 
 	let isAddToUsersDialogOpen = $state(false);
 	let userIdsToAdd = $state<number[]>([]);
@@ -31,7 +31,7 @@
 	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.users.find((id) => id === user.id)));
 
 	function handleAddUsersToServer() {
-		console.log('Adding users to server:', userIdsToAdd);
+		onAddUsersToServer(userIdsToAdd);
 		isAddToUsersDialogOpen = false;
 	}
 </script>
@@ -116,7 +116,15 @@
 						<Dialog.Header>
 							<Dialog.Title class="mb-2">Who do you want to add?</Dialog.Title>
 							<Dialog.Description>
-								<Select.Root portal={null} multiple>
+								<Select.Root
+									multiple
+									onSelectedChange={(selected) => {
+										if (selected) {
+											const selectedItems = selected as { value: number; label: string }[];
+											userIdsToAdd = selectedItems.map((item) => item.value);
+										}
+									}}
+								>
 									<Select.Trigger class="w-[100%]">
 										<Select.Value placeholder="Select a user" />
 									</Select.Trigger>
@@ -127,7 +135,7 @@
 											{/each}
 										</Select.Group>
 									</Select.Content>
-									<Select.Input name="usersToAdd" bind:value={userIdsToAdd} />
+									<Select.Input name="usersToAdd" />
 								</Select.Root>
 							</Dialog.Description>
 						</Dialog.Header>
