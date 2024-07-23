@@ -165,8 +165,8 @@
 								</Table.Cell>
 								<Table.Cell class="hidden sm:table-cell">{server.ipAddress}</Table.Cell>
 								<Table.Cell class="hidden sm:table-cell">
-									<Badge class="text-xs" variant="secondary">
-										{serverActive ? 'Active' : 'stale'}
+									<Badge class="text-xs" variant={serverActive ? 'default' : 'secondary'}>
+										{serverActive ? 'Active' : 'Stale'}
 									</Badge>
 								</Table.Cell>
 								<Table.Cell class="hidden sm:table-cell">{server.users.length}</Table.Cell>

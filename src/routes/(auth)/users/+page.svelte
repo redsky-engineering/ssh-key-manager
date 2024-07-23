@@ -1,8 +1,11 @@
 <script lang="ts">
 	import type { UserData } from '$lib/types.js';
 	import AppBarMobileMenu from '$lib/ui/appBarMobileMenu/AppBarMobileMenu.svelte';
+	import { Badge } from '$lib/ui/badge/index.js';
 	import { Button } from '$lib/ui/button/index.js';
+	import { Label } from '$lib/ui/label/index.js';
 	import * as Sheet from '$lib/ui/sheet/index.js';
+	import { Switch } from '$lib/ui/switch/index.js';
 
 	import * as Card from '$lib/ui/card/index.js';
 	import type { PageData } from './$types.js';
@@ -11,6 +14,7 @@
 
 	let searchValue = $state('');
 	let isSheetOpen = $state(false);
+	let selectedUser: UserData | null = $state(null);
 
 	let filteredUsers = $derived.by(() => {
 		return data.users.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase()));
@@ -18,18 +22,26 @@
 
 	$inspect(data);
 
-	function handleClickUserCard() {
+	function handleClickUserCard(user: UserData) {
 		isSheetOpen = true;
+		selectedUser = user;
 		console.log('User card clicked');
 	}
 </script>
 
 {#snippet userCard(user: UserData)}
-	<button onclick={handleClickUserCard} class="text-left" aria-label="Select User">
+	<button onclick={() => handleClickUserCard(user)} class="text-left" aria-label="Select User">
 		<Card.Root class="cursor-pointer">
 			<Card.Header>
-				<Card.Title>{user.name}</Card.Title>
-				<Card.Description>Card Description</Card.Description>
+				<Card.Title>
+					<div class="flex justify-between">
+						{user.name}
+						<Badge class="text-sm" variant={user.isActive ? 'default' : 'secondary'}>
+							{user.isActive ? 'Active' : 'Inactive'}
+						</Badge>
+					</div>
+				</Card.Title>
+				<Card.Description></Card.Description>
 			</Card.Header>
 			<Card.Content>
 				<p>Card Content</p>
@@ -51,12 +63,18 @@
 </div>
 
 <Sheet.Root bind:open={isSheetOpen}>
-	<Sheet.Content side="right">
+	<Sheet.Content side="right" class="sm:max-w-lg">
 		<Sheet.Header>
-			<Sheet.Title>Edit profile</Sheet.Title>
-			<Sheet.Description>Make changes to your profile here. Click save when you're done.</Sheet.Description>
+			<Sheet.Title>
+				{selectedUser?.name}
+			</Sheet.Title>
 		</Sheet.Header>
-		<div class="grid gap-4 py-4">
+		<div class="my-4 flex items-center gap-2">
+			<Switch id="airplane-mode" />
+			<Label for="airplane-mode" class="cursor-pointer">Active</Label>
+		</div>
+		<h3>SSH Keys</h3>
+		<div class="grid gap-4 py-2">
 			<div class="grid grid-cols-4 items-center gap-4">
 				<p>Name</p>
 				<p>Pedro</p>

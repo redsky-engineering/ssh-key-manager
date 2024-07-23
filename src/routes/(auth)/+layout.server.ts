@@ -159,16 +159,45 @@ export const load: LayoutServerLoad = async () => {
 	const users: UserData[] = [
 		{
 			id: 1,
-			name: 'Alice'
+			isActive: true,
+			name: 'Alice',
+			sshKeyData: [
+				{
+					comment: "Alice's SSH Key",
+					fingerPrint: '00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF'
+				}
+			]
 		},
 		{
 			id: 2,
-			name: 'Bob'
+			isActive: true,
+			name: 'Bob',
+
+			sshKeyData: [
+				{
+					comment: "Bob's SSH Key",
+					fingerPrint: '11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00'
+				},
+				{
+					comment: "Bob's SSH Key 2",
+					fingerPrint: '11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00'
+				}
+			]
 		},
-		{ id: 3, name: 'David' },
-		{ id: 4, name: 'Eva' },
-		{ id: 5, name: 'Frank' },
-		{ id: 6, name: 'Grace' }
+		{
+			id: 3,
+			isActive: true,
+			name: 'David',
+			sshKeyData: [
+				{
+					comment: "David's SSH Key",
+					fingerPrint: '22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11'
+				}
+			]
+		},
+		{ id: 4, isActive: false, name: 'Eva', sshKeyData: [] },
+		{ id: 5, isActive: false, name: 'Frank', sshKeyData: [] },
+		{ id: 6, isActive: false, name: 'Grace', sshKeyData: [] }
 	];
 
 	return {

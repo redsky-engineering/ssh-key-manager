@@ -11,5 +11,7 @@ export interface ServerData {
 
 export interface UserData {
 	id: number;
+	isActive: boolean;
 	name: string;
+	sshKeyData: { comment: string; fingerPrint: string }[];
 }
