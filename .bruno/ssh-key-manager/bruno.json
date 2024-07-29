@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "SSH Key Manager",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
