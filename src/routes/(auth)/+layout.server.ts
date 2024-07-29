@@ -159,6 +159,7 @@ export const load: LayoutServerLoad = async () => {
 	const users: UserData[] = [
 		{
 			id: 1,
+			isPrimary: true,
 			isActive: true,
 			name: 'Alice',
 			sshKeyData: [
@@ -170,6 +171,7 @@ export const load: LayoutServerLoad = async () => {
 		},
 		{
 			id: 2,
+			isPrimary: false,
 			isActive: true,
 			name: 'Bob',
 
@@ -186,6 +188,7 @@ export const load: LayoutServerLoad = async () => {
 		},
 		{
 			id: 3,
+			isPrimary: false,
 			isActive: true,
 			name: 'David',
 			sshKeyData: [
@@ -195,9 +198,10 @@ export const load: LayoutServerLoad = async () => {
 				}
 			]
 		},
-		{ id: 4, isActive: false, name: 'Eva', sshKeyData: [] },
-		{ id: 5, isActive: false, name: 'Frank', sshKeyData: [] },
-		{ id: 6, isActive: false, name: 'Grace', sshKeyData: [] }
+		{ id: 4, isPrimary: true, isActive: false, name: 'Eva', sshKeyData: [] },
+		{ id: 5, isPrimary: false, isActive: false, name: 'Frank', sshKeyData: [] },
+		{ id: 6, isPrimary: true, isActive: false, name: 'Grace', sshKeyData: [] },
+		{ id: 7, isPrimary: false, isActive: false, name: 'John Wick', sshKeyData: [] }
 	];
 
 	return {

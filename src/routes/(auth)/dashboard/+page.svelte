@@ -17,12 +17,20 @@
 	let { data }: { data: PageData } = $props();
 
 	let selectedServerId: number | null = $state(data.servers.length > 0 ? data.servers[0].id : null);
-	$inspect(selectedServerId);
-
 	let searchValue = $state('');
 
 	let filteredServers = $derived.by(() => {
 		return data.servers.filter((server) => server.name.toLowerCase().includes(searchValue.toLowerCase()));
+	});
+
+	let activeServers = $derived.by(() => {
+		return data.servers.filter((server) => isServerActive(server));
+	});
+
+	let usersWithAccessCount = $derived.by(() => {
+		return data.users.filter(
+			(user) => user.isActive && data.servers.some((server) => server.users.includes(user.id))
+		).length;
 	});
 
 	function isServerActive(server: ServerData): boolean {
@@ -43,13 +51,13 @@
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Description>Total Servers</Card.Description>
-						<Card.Title class="text-4xl">8</Card.Title>
+						<Card.Title class="text-4xl">{data.servers.length}</Card.Title>
 					</Card.Header>
 				</Card.Root>
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Description>Active Servers</Card.Description>
-						<Card.Title class="text-4xl text-green-300">4</Card.Title>
+						<Card.Title class="text-4xl text-green-300">{activeServers.length}</Card.Title>
 					</Card.Header>
 					<Card.Content>
 						<div class="text-xs text-muted-foreground">1 new from last week</div>
@@ -73,7 +81,7 @@
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Description>Users With Access</Card.Description>
-						<Card.Title class="text-3xl">{data.users.length}</Card.Title>
+						<Card.Title class="text-3xl">{usersWithAccessCount}</Card.Title>
 					</Card.Header>
 					<Card.Content>
 						<div class="text-xs text-muted-foreground">{data.users.length} total users</div>

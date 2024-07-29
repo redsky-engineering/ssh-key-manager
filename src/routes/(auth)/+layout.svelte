@@ -5,6 +5,10 @@
 	import Settings from 'lucide-svelte/icons/settings';
 	import UsersRound from 'lucide-svelte/icons/users-round';
 	import type { Snippet } from 'svelte';
+	import { source } from 'sveltekit-sse';
+
+	const value = source('/api/v1/stream').select('message');
+	$inspect($value);
 
 	let { children }: { children: Snippet } = $props();
 </script>
