@@ -1,5 +1,5 @@
 import { JWT_SECRET } from '$env/static/private';
-import { removeAuth } from '$lib/server/auth.js';
+import { isUnprotectedRoute, removeAuth } from '$lib/server/auth.js';
 // import serviceFactory from '$lib/services/serviceFactory.js';
 import { type Cookies, type Handle, redirect } from '@sveltejs/kit';
 import type { JwtPayload } from 'jsonwebtoken';
@@ -9,8 +9,6 @@ import jwt from 'jsonwebtoken';
 // serviceFactory.init();
 
 console.log('hooks on server.');
-
-const unProtectedRoutes = ['/'];
 
 export const handle = (async ({ event, resolve }) => {
 	await validateTokens(event.fetch, event.cookies, event.locals);
@@ -34,7 +32,7 @@ async function validateTokens(svelteFetch: typeof fetch, cookies: Cookies, local
 
 function checkProtectedRoutes(url: URL, cookies: Cookies): void {
 	console.log('CHECK ROUTE - url.pathname: ', url.pathname);
-	if (unProtectedRoutes.some((route) => url.pathname.toLowerCase() === route)) return;
+	if (isUnprotectedRoute(url.pathname.toLowerCase())) return;
 	console.log('route is protected');
 
 	const accessToken = cookies.get('accessToken');

@@ -1,4 +1,4 @@
-import { JWT_SECRET } from '$env/static/private';
+import { JWT_SECRET, SITE_PASSWORD } from '$env/static/private';
 import { loginSchema } from '$lib/schema/schema.js';
 import { setAccessTokenCookie } from '$lib/server/auth.js';
 import simpleDb from '$lib/server/simpleDb.js';
@@ -11,7 +11,8 @@ import { zod } from 'sveltekit-superforms/adapters';
 // No refresh tokens at this time.
 const ACCESS_TOKEN_TIMEOUT_HUMAN = '30m';
 
-export const load = async () => {
+export const load = async ({ locals }) => {
+	if (locals.userId) redirect(301, '/dashboard');
 	const form = await superValidate(zod(loginSchema));
 
 	return { form };
@@ -28,8 +29,7 @@ export const actions = {
 
 		console.log(simpleDb.users);
 
-		if (form.data.password !== 'password') {
-			// Return a custom error message
+		if (form.data.password !== SITE_PASSWORD) {
 			return setError(form, 'password', 'Invalid Password');
 		}
 

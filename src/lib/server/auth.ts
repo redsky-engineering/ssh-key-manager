@@ -36,3 +36,13 @@ export function removeAuth(cookies: Cookies, locals: App.Locals): void {
 	cookies.delete('accessToken', { path: '/' });
 	locals.userId = undefined;
 }
+
+const unProtectedRoutes = ['/', '/api/v1/server/keys'];
+
+export function isUnprotectedRoute(pathname: string): boolean {
+	for (const route of unProtectedRoutes) {
+		if (route.endsWith('*') && pathname.startsWith(route.slice(0, -1))) return true;
+		if (route === pathname) return true;
+	}
+	return false;
+}
