@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import * as Tooltip from '$lib/ui/tooltip/index.js';
+	import { cn } from '$lib/utils.js';
 	import Home from 'lucide-svelte/icons/house';
 	import KeyRound from 'lucide-svelte/icons/key-round';
 	import Settings from 'lucide-svelte/icons/settings';
@@ -9,6 +11,7 @@
 
 	const value = source('/api/v1/stream').select('message');
 	$inspect($value);
+	$inspect($page.url.pathname);
 
 	let { children }: { children: Snippet } = $props();
 </script>
@@ -26,7 +29,10 @@
 				<Tooltip.Trigger asChild let:builder>
 					<a
 						href="/dashboard"
-						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+						class={cn(
+							'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+							{ 'text-green-300': $page.url.pathname === '/dashboard' }
+						)}
 						use:builder.action
 						{...builder}
 					>
@@ -40,7 +46,10 @@
 				<Tooltip.Trigger asChild let:builder>
 					<a
 						href="/users"
-						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+						class={cn(
+							'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+							{ 'text-green-300': $page.url.pathname === '/users' }
+						)}
 						use:builder.action
 						{...builder}
 					>
@@ -56,7 +65,10 @@
 				<Tooltip.Trigger asChild let:builder>
 					<a
 						href="/settings"
-						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+						class={cn(
+							'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+							{ 'text-green-300': $page.url.pathname === '/settings' }
+						)}
 						use:builder.action
 						{...builder}
 					>
