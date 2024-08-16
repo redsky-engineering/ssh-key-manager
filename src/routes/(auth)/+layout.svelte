@@ -14,6 +14,15 @@
 	$inspect($page.url.pathname);
 
 	let { children }: { children: Snippet } = $props();
+
+	function getMenuItemClasses(path: string): string {
+		return cn(
+			'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+			{
+				'bg-muted': $page.url.pathname === path
+			}
+		);
+	}
 </script>
 
 <div class="flex min-h-screen w-full flex-col bg-muted/40">
@@ -27,15 +36,7 @@
 			</span>
 			<Tooltip.Root>
 				<Tooltip.Trigger asChild let:builder>
-					<a
-						href="/dashboard"
-						class={cn(
-							'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
-							{ 'text-green-300': $page.url.pathname === '/dashboard' }
-						)}
-						use:builder.action
-						{...builder}
-					>
+					<a href="/dashboard" class={getMenuItemClasses('/dashboard')} use:builder.action {...builder}>
 						<Home class="h-5 w-5" />
 						<span class="sr-only">Dashboard</span>
 					</a>
@@ -44,15 +45,7 @@
 			</Tooltip.Root>
 			<Tooltip.Root>
 				<Tooltip.Trigger asChild let:builder>
-					<a
-						href="/users"
-						class={cn(
-							'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
-							{ 'text-green-300': $page.url.pathname === '/users' }
-						)}
-						use:builder.action
-						{...builder}
-					>
+					<a href="/users" class={getMenuItemClasses('/users')} use:builder.action {...builder}>
 						<UsersRound class="h-5 w-5" />
 						<span class="sr-only">Users</span>
 					</a>
@@ -63,15 +56,7 @@
 		<nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
 			<Tooltip.Root>
 				<Tooltip.Trigger asChild let:builder>
-					<a
-						href="/settings"
-						class={cn(
-							'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
-							{ 'text-green-300': $page.url.pathname === '/settings' }
-						)}
-						use:builder.action
-						{...builder}
-					>
+					<a href="/settings" class={getMenuItemClasses('/settings')} use:builder.action {...builder}>
 						<Settings class="h-5 w-5" />
 						<span class="sr-only">Settings</span>
 					</a>

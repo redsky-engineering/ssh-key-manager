@@ -1,14 +1,15 @@
 import { JWT_SECRET } from '$env/static/private';
 import { isUnprotectedRoute, removeAuth } from '$lib/server/auth.js';
+import simpleDb from '$lib/server/simpleDb.js';
 // import serviceFactory from '$lib/services/serviceFactory.js';
 import { type Cookies, type Handle, redirect } from '@sveltejs/kit';
 import type { JwtPayload } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
 
 // Put initialization code here
-// serviceFactory.init();
+await simpleDb.loadInitialData();
 
-console.log('hooks on server.');
+console.log('hooks on server....');
 
 export const handle = (async ({ event, resolve }) => {
 	await validateTokens(event.fetch, event.cookies, event.locals);

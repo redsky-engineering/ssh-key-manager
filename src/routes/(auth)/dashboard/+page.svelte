@@ -2,7 +2,7 @@
 	import File from 'lucide-svelte/icons/file';
 
 	import AppUtils from '$lib/AppUtils.js';
-	import type { ServerData } from '$lib/types.js';
+	import type { ServerData } from '$lib/server/simpleDb.js';
 	import AppBarMobileMenu from '$lib/ui/appBarMobileMenu/AppBarMobileMenu.svelte';
 	import { Badge } from '$lib/ui/badge/index.js';
 	import { Button } from '$lib/ui/button/index.js';
@@ -29,7 +29,7 @@
 
 	let usersWithAccessCount = $derived.by(() => {
 		return data.users.filter(
-			(user) => user.isActive && data.servers.some((server) => server.users.includes(user.id))
+			(user) => user.isActive && data.servers.some((server) => server.userIds.includes(user.id))
 		).length;
 	});
 
@@ -177,7 +177,7 @@
 										{serverActive ? 'Active' : 'Stale'}
 									</Badge>
 								</Table.Cell>
-								<Table.Cell class="hidden sm:table-cell">{server.users.length}</Table.Cell>
+								<Table.Cell class="hidden sm:table-cell">{server.userIds.length}</Table.Cell>
 								<Table.Cell class="text-right">
 									{AppUtils.getRelativeTime(server.lastHeartbeatOn)}
 								</Table.Cell>

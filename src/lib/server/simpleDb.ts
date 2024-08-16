@@ -4,21 +4,72 @@
 // to the database will be written to the json files.
 
 import { promises as fs } from 'fs';
+import { z } from 'zod';
+
+const sshKeyDataSchema = z.object({
+	comment: z.string(),
+	fingerPrint: z.string()
+});
+
+const userDataSchema = z.object({
+	id: z.number(),
+	isSystemAdmin: z.boolean(),
+	isActive: z.boolean(),
+	name: z.string(),
+	sshKeyData: z.array(sshKeyDataSchema)
+});
+const userDataArraySchema = z.array(userDataSchema);
+
+export type UserData = z.infer<typeof userDataSchema>;
+
+const serverDataSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	ipAddress: z.string(),
+	lastHeartbeatOn: z.string(),
+	cpuUsagePercent: z.number(),
+	memoryUsagePercent: z.number(),
+	diskUsagePercent: z.number(),
+	userIds: z.array(z.number())
+});
+
+export type ServerData = z.infer<typeof serverDataSchema>;
+
+const serverDataArraySchema = z.array(serverDataSchema);
 
 class SimpleDb {
-	users!: any[];
+	users: UserData[];
+	servers: ServerData[];
 
 	constructor() {
-		this.loadInitialData().catch(console.error);
+		this.users = [];
+		this.servers = [];
 	}
 
 	async loadInitialData() {
-		// Read the file asynchronously
-		const usersFileData = await fs.readFile('/tmp/users.json', 'utf8');
+		try {
+			// Read the file asynchronously
+			const usersFileData = await fs.readFile(
+				'/home/joshh/redsky/redsky/ssh-key-manager/static/users.json',
+				'utf8'
+			);
 
-		// Parse the file content as JSON
-		this.users = JSON.parse(usersFileData);
-		console.log('this.users: ', this.users);
+			// Parse the file content as JSON
+			const parsedUserData = JSON.parse(usersFileData);
+			this.users = userDataArraySchema.parse(parsedUserData);
+			console.log('this.users: ', this.users);
+
+			const serversFileData = await fs.readFile(
+				'/home/joshh/redsky/redsky/ssh-key-manager/static/servers.json',
+				'utf8'
+			);
+
+			const parsedServerData = JSON.parse(serversFileData);
+			this.servers = serverDataArraySchema.parse(parsedServerData);
+			console.log('this.servers: ', this.servers);
+		} catch (error) {
+			console.error('Error loading initial data: ', error);
+		}
 	}
 
 	async writeData() {}

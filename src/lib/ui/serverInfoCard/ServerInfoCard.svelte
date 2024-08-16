@@ -7,7 +7,7 @@
 	import Trash2 from 'lucide-svelte/icons/trash-2';
 
 	import AppUtils from '$lib/AppUtils.js';
-	import type { ServerData, UserData } from '$lib/types.js';
+	import type { ServerData, UserData } from '$lib/server/simpleDb.js';
 	import { Button, buttonVariants } from '$lib/ui/button/index.js';
 	import * as Card from '$lib/ui/card/index.js';
 	import * as Dialog from '$lib/ui/dialog';
@@ -28,7 +28,7 @@
 	let isAddToUsersDialogOpen = $state(false);
 	let userIdsToAdd = $state<number[]>([]);
 
-	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.users.find((id) => id === user.id)));
+	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.userIds.find((id) => id === user.id)));
 
 	function handleAddUsersToServer() {
 		onAddUsersToServer(userIdsToAdd);
@@ -99,7 +99,7 @@
 			<Separator class="my-2" />
 			<div class="font-semibold">Users</div>
 			<ul class="grid gap-3">
-				{#each serverInfo.users as userId}
+				{#each serverInfo.userIds as userId}
 					{#if users.find((user) => user.id === userId)}
 						{@const user = users.find((user) => user.id === userId)}
 						<li class="flex items-center justify-between">

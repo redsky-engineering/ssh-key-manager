@@ -1,23 +1,39 @@
 <script lang="ts">
-	import type { UserData } from '$lib/types.js';
 	import AppBarMobileMenu from '$lib/ui/appBarMobileMenu/AppBarMobileMenu.svelte';
 	import { Badge } from '$lib/ui/badge/index.js';
 	import { Label } from '$lib/ui/label/index.js';
 	import * as Sheet from '$lib/ui/sheet/index.js';
 	import { Switch } from '$lib/ui/switch/index.js';
 
+	import { userNameSchema } from '$lib/schema/schema.js';
+	import type { UserData } from '$lib/server/simpleDb.js';
 	import * as Card from '$lib/ui/card/index.js';
+	import EditUserNamePopup from '$lib/ui/popups/EditUserNamePopup.svelte';
 	import { Key, Pencil, Server, Shield, Trash2 } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
+	import { superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
 
 	let searchValue = $state('');
 	let isSheetOpen = $state(false);
+	let isEditUserNamePopupOpen = $state(false);
 	let selectedUser: UserData | null = $state(null);
 
 	let filteredUsers = $derived.by(() => {
 		return data.users.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase()));
+	});
+
+	const form = superForm(data.form, {
+		validators: zod(userNameSchema),
+		onUpdated: ({ form }) => {
+			if (!form.valid) return;
+			isEditUserNamePopupOpen = false;
+			selectedUser!.name = form.data.name;
+			toast.success("User's name updated successfully");
+		}
 	});
 
 	$inspect(data);
@@ -25,6 +41,7 @@
 	function handleClickUserCard(user: UserData) {
 		isSheetOpen = true;
 		selectedUser = user;
+		form.form.set({ name: user.name });
 	}
 </script>
 
@@ -36,7 +53,7 @@
 					<div class="flex items-center justify-between">
 						<div class="flex gap-2">
 							{user.name}
-							{#if user.isPrimary}
+							{#if user.isSystemAdmin}
 								<Shield size={16} class="text-green-300" />
 							{/if}
 						</div>
@@ -45,11 +62,6 @@
 						</Badge>
 					</div>
 				</Card.Title>
-				<!-- <Card.Description>
-					
-						<span class="rounded-md bg-green-300 p-1 text-black">Admin</span>
-					{/if}
-				</Card.Description> -->
 			</Card.Header>
 			<Card.Footer class="flex justify-between">
 				<div class="flex gap-2"><Key /> {user.sshKeyData.length}</div>
@@ -73,11 +85,14 @@
 		<Sheet.Header>
 			<Sheet.Title>
 				<div class="flex items-baseline gap-2">
-					{selectedUser!.name}<Pencil size={16} class="cursor-pointer" />
+					{selectedUser!.name}
+					<button onclick={() => (isEditUserNamePopupOpen = true)}>
+						<Pencil size={16} class="cursor-pointer" />
+					</button>
 				</div>
 			</Sheet.Title>
 		</Sheet.Header>
-		{#if !selectedUser!.isPrimary}
+		{#if !selectedUser!.isSystemAdmin}
 			<div class="mt-4 flex items-center gap-2">
 				<Switch
 					id="airplane-mode"
@@ -108,3 +123,5 @@
 		</div>
 	</Sheet.Content>
 </Sheet.Root>
+
+<EditUserNamePopup bind:open={isEditUserNamePopupOpen} {form} />

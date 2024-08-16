@@ -1,7 +1,6 @@
 import { JWT_SECRET, SITE_PASSWORD } from '$env/static/private';
 import { loginSchema } from '$lib/schema/schema.js';
 import { setAccessTokenCookie } from '$lib/server/auth.js';
-import simpleDb from '$lib/server/simpleDb.js';
 import { fail, redirect } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
 import { setError, superValidate } from 'sveltekit-superforms';
@@ -26,8 +25,6 @@ export const actions = {
 			// Again, return { form } and things will just work.
 			return fail(400, { form });
 		}
-
-		console.log(simpleDb.users);
 
 		if (form.data.password !== SITE_PASSWORD) {
 			return setError(form, 'password', 'Invalid Password');

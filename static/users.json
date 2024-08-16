@@ -1,0 +1,47 @@
+[
+	{
+		"id": 1,
+		"isSystemAdmin": true,
+		"isActive": true,
+		"name": "Alice",
+		"sshKeyData": [
+			{
+				"comment": "Alice's SSH Key",
+				"fingerPrint": "00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF"
+			}
+		]
+	},
+	{
+		"id": 2,
+		"isSystemAdmin": false,
+		"isActive": true,
+		"name": "Bob",
+
+		"sshKeyData": [
+			{
+				"comment": "Bob's SSH Key",
+				"fingerPrint": "11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00"
+			},
+			{
+				"comment": "Bob's SSH Key 2",
+				"fingerPrint": "11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00"
+			}
+		]
+	},
+	{
+		"id": 3,
+		"isSystemAdmin": false,
+		"isActive": true,
+		"name": "David",
+		"sshKeyData": [
+			{
+				"comment": "David's SSH Key",
+				"fingerPrint": "22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11"
+			}
+		]
+	},
+	{ "id": 4, "isSystemAdmin": true, "isActive": false, "name": "Eva", "sshKeyData": [] },
+	{ "id": 5, "isSystemAdmin": false, "isActive": false, "name": "Frank", "sshKeyData": [] },
+	{ "id": 6, "isSystemAdmin": true, "isActive": false, "name": "Grace", "sshKeyData": [] },
+	{ "id": 7, "isSystemAdmin": false, "isActive": false, "name": "John Wick", "sshKeyData": [] }
+]

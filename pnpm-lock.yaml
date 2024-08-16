@@ -23,6 +23,9 @@ importers:
       mode-watcher:
         specifier: ^0.3.1
         version: 0.3.1(svelte@5.0.0-next.219)
+      svelte-sonner:
+        specifier: ^0.3.27
+        version: 0.3.27(svelte@5.0.0-next.219)
       sveltekit-sse:
         specifier: ^0.13.5
         version: 0.13.5(@microsoft/fetch-event-source@2.0.1)(@sveltejs/kit@2.5.22(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.219)(vite@5.4.0(@types/node@22.2.0)))(svelte@5.0.0-next.219)(vite@5.4.0(@types/node@22.2.0)))(svelte@5.0.0-next.219)
@@ -1811,6 +1814,11 @@ packages:
       typescript:
         optional: true
 
+  svelte-sonner@0.3.27:
+    resolution: {integrity: sha512-+PvbuePNTyTNCepCWqKcFeu+Lo27yYuwfSc7zJvrWjCRMJrWAmccPg3j7jO1W13QoN3TySXU5Trb956VBQiM5Q==}
+    peerDependencies:
+      svelte: ^3.0.0 || ^4.0.0 || ^5.0.0-next.1
+
   svelte@5.0.0-next.219:
     resolution: {integrity: sha512-f6qHmE2TNVmx9GzBR5tzQQaAVTq/Bll8rYhWRbkYjoCpA+WgkAK3I276SejLv6u/IeVQE7TX8s7ljyanvbtFBA==}
     engines: {node: '>=18'}
@@ -3571,6 +3579,10 @@ snapshots:
       postcss: 8.4.41
       postcss-load-config: 4.0.2(postcss@8.4.41)
       typescript: 5.5.4
+
+  svelte-sonner@0.3.27(svelte@5.0.0-next.219):
+    dependencies:
+      svelte: 5.0.0-next.219
 
   svelte@5.0.0-next.219:
     dependencies:

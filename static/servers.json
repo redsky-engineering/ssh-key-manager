@@ -1,239 +1,152 @@
 [
 	{
-		"hostname": "sponsr-sandbox",
-		"lastRequestTime": "2023-06-22T21:17:01.263Z",
-		"users": [
-			"joshua.hintze",
-			"thomas.crockett",
-			"ontrac.gitlab.dev.ops",
-			"bob.the.builder",
-			"nate.hardy",
-			"seth.adamson",
-			"wyatt.grantham",
-			"conrad.frame"
-		]
+		"id": 1,
+		"name": "Server1",
+		"ipAddress": "192.168.1.1",
+		"lastHeartbeatOn": "2024-07-20T00:16:00Z",
+		"cpuUsagePercent": 45,
+		"memoryUsagePercent": 70,
+		"diskUsagePercent": 60,
+		"userIds": [1, 2, 3]
 	},
 	{
-		"hostname": "workflow360-db-production",
-		"lastRequestTime": "2023-02-24T16:20:02.197Z",
-		"users": ["joshua.hintze", "thomas.crockett", "nate.hardy"]
+		"id": 2,
+		"name": "Server2",
+		"ipAddress": "192.168.1.2",
+		"lastHeartbeatOn": "2024-07-17T03:55:00Z",
+		"cpuUsagePercent": 55,
+		"memoryUsagePercent": 65,
+		"diskUsagePercent": 75,
+		"userIds": [1, 2]
 	},
 	{
-		"hostname": "ontrac-db-2",
-		"lastRequestTime": "2023-06-17T22:56:01.877Z",
-		"users": ["joshua.hintze", "nate.hardy"]
+		"id": 3,
+		"name": "Server3",
+		"ipAddress": "192.168.1.3",
+		"lastHeartbeatOn": "2024-07-15T12:10:00Z",
+		"cpuUsagePercent": 35,
+		"memoryUsagePercent": 50,
+		"diskUsagePercent": 40,
+		"userIds": []
 	},
 	{
-		"hostname": "ontrac-mother",
-		"lastRequestTime": "2023-06-17T22:56:02.041Z",
-		"users": ["joshua.hintze", "nate.hardy"]
+		"id": 4,
+		"name": "Server4",
+		"ipAddress": "192.168.1.4",
+		"lastHeartbeatOn": "2024-07-15T12:15:00Z",
+		"cpuUsagePercent": 25,
+		"memoryUsagePercent": 45,
+		"diskUsagePercent": 55,
+		"userIds": [1, 2]
 	},
 	{
-		"hostname": "ontrac-sandbox",
-		"lastRequestTime": "2023-06-17T23:01:01.488Z",
-		"users": ["joshua.hintze", "nate.hardy"]
+		"id": 5,
+		"name": "Server5",
+		"ipAddress": "192.168.1.5",
+		"lastHeartbeatOn": "2024-07-15T12:20:00Z",
+		"cpuUsagePercent": 65,
+		"memoryUsagePercent": 80,
+		"diskUsagePercent": 85,
+		"userIds": [3, 4]
 	},
 	{
-		"hostname": "sponsor-legacy",
-		"lastRequestTime": "2023-06-22T22:34:01.345Z",
-		"users": ["joshua.hintze", "thomas.crockett", "nate.hardy", "seth.adamson", "wyatt.grantham", "conrad.frame"]
+		"id": 6,
+		"name": "Server6",
+		"ipAddress": "192.168.1.6",
+		"lastHeartbeatOn": "2024-07-15T12:25:00Z",
+		"cpuUsagePercent": 50,
+		"memoryUsagePercent": 60,
+		"diskUsagePercent": 70,
+		"userIds": [1]
 	},
 	{
-		"hostname": "ontrac-stats",
-		"lastRequestTime": "2023-06-17T22:53:02.239Z",
-		"users": ["joshua.hintze", "nate.hardy"]
+		"id": 7,
+		"name": "Server7",
+		"ipAddress": "192.168.1.7",
+		"lastHeartbeatOn": "2024-07-15T12:30:00Z",
+		"cpuUsagePercent": 30,
+		"memoryUsagePercent": 55,
+		"diskUsagePercent": 65,
+		"userIds": [5, 6]
 	},
 	{
-		"hostname": "workflow360-php-2",
-		"lastRequestTime": "2023-02-24T16:24:02.022Z",
-		"users": ["joshua.hintze", "thomas.crockett", "nate.hardy"]
+		"id": 8,
+		"name": "Server8",
+		"ipAddress": "192.168.1.8",
+		"lastHeartbeatOn": "2024-07-15T12:35:00Z",
+		"cpuUsagePercent": 40,
+		"memoryUsagePercent": 50,
+		"diskUsagePercent": 60,
+		"userIds": [2, 4, 6]
 	},
 	{
-		"hostname": "vendoti-backup-1",
-		"lastRequestTime": "2024-07-26T21:28:01.301Z",
-		"users": ["joshua.hintze", "nate.hardy"]
+		"id": 9,
+		"name": "Server9",
+		"ipAddress": "192.168.1.9",
+		"lastHeartbeatOn": "2024-07-15T12:40:00Z",
+		"cpuUsagePercent": 70,
+		"memoryUsagePercent": 75,
+		"diskUsagePercent": 80,
+		"userIds": []
 	},
 	{
-		"hostname": "url-shortener",
-		"lastRequestTime": "2023-01-04T01:09:01.647Z",
-		"users": ["joshua.hintze", "nate.hardy"]
+		"id": 10,
+		"name": "Server10",
+		"ipAddress": "192.168.1.10",
+		"lastHeartbeatOn": "2024-07-15T12:45:00Z",
+		"cpuUsagePercent": 60,
+		"memoryUsagePercent": 65,
+		"diskUsagePercent": 55,
+		"userIds": []
 	},
 	{
-		"hostname": "ontrac-rest-1",
-		"lastRequestTime": "2023-06-17T22:55:01.986Z",
-		"users": ["joshua.hintze", "nate.hardy"]
+		"id": 11,
+		"name": "Server11",
+		"ipAddress": "192.168.1.11",
+		"lastHeartbeatOn": "2024-07-15T12:50:00Z",
+		"cpuUsagePercent": 20,
+		"memoryUsagePercent": 30,
+		"diskUsagePercent": 40,
+		"userIds": []
 	},
 	{
-		"hostname": "logger",
-		"lastRequestTime": "2024-07-26T21:28:02.069Z",
-		"users": ["joshua.hintze", "mckay.christensen", "alex.suess", "nate.hardy"]
+		"id": 12,
+		"name": "Server12",
+		"ipAddress": "192.168.1.12",
+		"lastHeartbeatOn": "2024-07-15T12:55:00Z",
+		"cpuUsagePercent": 45,
+		"memoryUsagePercent": 55,
+		"diskUsagePercent": 65,
+		"userIds": []
 	},
 	{
-		"hostname": "workflow360-php-1",
-		"lastRequestTime": "2023-02-24T16:24:01.918Z",
-		"users": ["joshua.hintze", "thomas.crockett", "nate.hardy"]
+		"id": 13,
+		"name": "Server13",
+		"ipAddress": "192.168.1.13",
+		"lastHeartbeatOn": "2024-07-15T13:00:00Z",
+		"cpuUsagePercent": 35,
+		"memoryUsagePercent": 50,
+		"diskUsagePercent": 60,
+		"userIds": []
 	},
 	{
-		"hostname": "sponsr-wordpress",
-		"lastRequestTime": "2024-06-18T16:50:02.008Z",
-		"users": ["joshua.hintze", "thomas.crockett", "nate.hardy", "seth.adamson", "conrad.frame"]
+		"id": 14,
+		"name": "Server14",
+		"ipAddress": "192.168.1.14",
+		"lastHeartbeatOn": "2024-07-15T13:05:00Z",
+		"cpuUsagePercent": 50,
+		"memoryUsagePercent": 65,
+		"diskUsagePercent": 75,
+		"userIds": []
 	},
 	{
-		"hostname": "ontrac-db-3",
-		"lastRequestTime": "2023-06-17T22:56:02.062Z",
-		"users": ["joshua.hintze", "nate.hardy"]
-	},
-	{
-		"hostname": "wf-sandbox",
-		"lastRequestTime": "2023-02-24T16:27:01.584Z",
-		"users": ["joshua.hintze", "thomas.crockett", "nate.hardy"]
-	},
-	{
-		"hostname": "workflow360-balancer",
-		"lastRequestTime": "2023-02-24T16:15:01.498Z",
-		"users": ["joshua.hintze", "thomas.crockett", "nate.hardy"]
-	},
-	{
-		"hostname": "ontrac-db-1",
-		"lastRequestTime": "2023-06-17T22:56:01.418Z",
-		"users": ["joshua.hintze", "nate.hardy"]
-	},
-	{
-		"hostname": "mixhers-sandbox",
-		"lastRequestTime": "2024-07-26T21:28:01.244Z",
-		"users": [
-			"joshua.hintze",
-			"bob.the.builder",
-			"ontrac.gitlab.dev.ops",
-			"alex.suess",
-			"nate.hardy",
-			"thomas.crockett"
-		]
-	},
-	{ "hostname": "volcanic", "lastRequestTime": "2022-08-19T22:21:01.752Z", "users": ["joshua.hintze", "nate.hardy"] },
-	{
-		"hostname": "Redsky-engineering",
-		"lastRequestTime": "2022-07-30T20:44:02.088Z",
-		"users": ["joshua.hintze", "bob.the.builder", "ontrac.gitlab.dev.ops", "nate.hardy"]
-	},
-	{
-		"hostname": "mixhers-balancer",
-		"lastRequestTime": "2024-07-26T21:28:01.248Z",
-		"users": ["joshua.hintze", "nate.hardy", "thomas.crockett", "alex.suess"]
-	},
-	{
-		"hostname": "mixhers-rest-db",
-		"lastRequestTime": "2023-03-28T17:24:30.854Z",
-		"users": ["joshua.hintze", "ontrac.gitlab.dev.ops", "nate.hardy", "thomas.crockett"]
-	},
-	{
-		"hostname": "sponsr-balancer",
-		"lastRequestTime": "2023-06-22T21:17:01.447Z",
-		"users": [
-			"joshua.hintze",
-			"bob.the.builder",
-			"ontrac.gitlab.dev.ops",
-			"thomas.crockett",
-			"nate.hardy",
-			"seth.adamson",
-			"wyatt.grantham",
-			"conrad.frame"
-		]
-	},
-	{
-		"hostname": "sponsr-rest-db",
-		"lastRequestTime": "2023-06-22T21:17:01.678Z",
-		"users": [
-			"joshua.hintze",
-			"thomas.crockett",
-			"ontrac.gitlab.dev.ops",
-			"bob.the.builder",
-			"nate.hardy",
-			"seth.adamson",
-			"wyatt.grantham",
-			"conrad.frame"
-		]
-	},
-	{
-		"hostname": "redsky-engineering-website",
-		"lastRequestTime": "2024-07-26T21:28:01.241Z",
-		"users": ["joshua.hintze", "nate.hardy"]
-	},
-	{
-		"hostname": "cretetech-website",
-		"lastRequestTime": "2023-03-13T17:46:01.362Z",
-		"users": ["joshua.hintze", "nate.hardy"]
-	},
-	{
-		"hostname": "pm-tool-sandbox",
-		"lastRequestTime": "2024-07-26T21:28:01.481Z",
-		"users": ["joshua.hintze", "ontrac.gitlab.dev.ops", "bob.the.builder", "nate.hardy", "thomas.crockett"]
-	},
-	{
-		"hostname": "dev.mixhers.com",
-		"lastRequestTime": "2022-10-03T19:32:01.321Z",
-		"users": ["joshua.hintze", "nate.hardy"]
-	},
-	{
-		"hostname": "gbpc",
-		"lastRequestTime": "2024-07-26T21:28:01.628Z",
-		"users": [
-			"joshua.hintze",
-			"nate.hardy",
-			"mckay.christensen",
-			"bob.the.builder",
-			"ontrac.gitlab.dev.ops",
-			"sunny.mallick"
-		]
-	},
-	{
-		"hostname": "localhost",
-		"lastRequestTime": "2024-04-12T16:19:01.188Z",
-		"users": ["joshua.hintze", "nate.hardy", "peter.weir"]
-	},
-	{
-		"hostname": "edify-balancer",
-		"lastRequestTime": "2024-07-26T21:28:01.305Z",
-		"users": ["joshua.hintze", "nate.hardy"]
-	},
-	{
-		"hostname": "edify-rest",
-		"lastRequestTime": "2024-07-26T21:28:01.403Z",
-		"users": ["joshua.hintze", "nate.hardy", "ontrac.gitlab.dev.ops", "alex.suess"]
-	},
-	{
-		"hostname": "edify-database",
-		"lastRequestTime": "2024-07-26T21:28:01.800Z",
-		"users": ["joshua.hintze", "nate.hardy"]
-	},
-	{
-		"hostname": "ru-solar-loadbalancer",
-		"lastRequestTime": "2024-07-26T21:28:01.238Z",
-		"users": ["joshua.hintze", "nate.hardy", "peter.weir", "ontrac.gitlab.dev.ops"]
-	},
-	{
-		"hostname": "ru-solar-app",
-		"lastRequestTime": "2024-07-26T21:28:01.368Z",
-		"users": ["joshua.hintze", "nate.hardy", "peter.weir", "ontrac.gitlab.dev.ops"]
-	},
-	{
-		"hostname": "solar-crm",
-		"lastRequestTime": "2024-04-12T16:21:01.445Z",
-		"users": ["joshua.hintze", "nate.hardy", "peter.weir"]
-	},
-	{
-		"hostname": "ru-solar-crm",
-		"lastRequestTime": "2024-07-26T21:28:01.939Z",
-		"users": ["joshua.hintze", "nate.hardy", "peter.weir"]
-	},
-	{
-		"hostname": "ru-solar-ticket",
-		"lastRequestTime": "2024-07-26T21:28:01.940Z",
-		"users": ["joshua.hintze", "nate.hardy", "peter.weir"]
-	},
-	{
-		"hostname": "flir-aws",
-		"lastRequestTime": "2024-07-26T21:28:02.222Z",
-		"users": ["joshua.hintze", "nate.hardy", "peter.weir", "ontrac.gitlab.dev.ops"]
+		"id": 15,
+		"name": "Server15",
+		"ipAddress": "192.168.1.15",
+		"lastHeartbeatOn": "2024-07-15T13:10:00Z",
+		"cpuUsagePercent": 55,
+		"memoryUsagePercent": 60,
+		"diskUsagePercent": 65,
+		"userIds": []
 	}
 ]

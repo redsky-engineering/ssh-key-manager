@@ -44,6 +44,7 @@
 		"jsonwebtoken": "^9.0.2",
 		"lucide-svelte": "^0.408.0",
 		"mode-watcher": "^0.3.1",
+		"svelte-sonner": "^0.3.27",
 		"sveltekit-sse": "^0.13.5",
 		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1",

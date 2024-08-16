@@ -5,3 +5,9 @@ export const loginSchema = z.object({
 });
 
 export type LoginSchema = z.infer<typeof loginSchema>;
+
+export const userNameSchema = z.object({
+	name: z.string().min(4, 'Minimum 4 characters')
+});
+
+export type UserNameSchema = z.infer<typeof userNameSchema>;
