@@ -9,9 +9,9 @@
 	import type { Snippet } from 'svelte';
 	import { source } from 'sveltekit-sse';
 
+	// Temp
 	const value = source('/api/v1/stream').select('message');
 	$inspect($value);
-	$inspect($page.url.pathname);
 
 	let { children }: { children: Snippet } = $props();
 

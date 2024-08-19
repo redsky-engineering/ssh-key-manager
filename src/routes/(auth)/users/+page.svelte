@@ -5,11 +5,11 @@
 	import * as Sheet from '$lib/ui/sheet/index.js';
 	import { Switch } from '$lib/ui/switch/index.js';
 
-	import { userNameSchema } from '$lib/schema/schema.js';
+	import { isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
 	import type { UserData } from '$lib/server/simpleDb.js';
 	import * as Card from '$lib/ui/card/index.js';
 	import EditUserNamePopup from '$lib/ui/popups/EditUserNamePopup.svelte';
-	import { Key, Pencil, Server, Shield, Trash2 } from 'lucide-svelte';
+	import { CirclePlus, Key, Pencil, Server, Shield, Trash2 } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
@@ -26,7 +26,7 @@
 		return data.users.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase()));
 	});
 
-	const form = superForm(data.form, {
+	const userNameForm = superForm(data.userNameForm, {
 		validators: zod(userNameSchema),
 		onUpdated: ({ form }) => {
 			if (!form.valid) return;
@@ -35,13 +35,29 @@
 			toast.success("User's name updated successfully");
 		}
 	});
+	const { form: userNameFormData } = userNameForm;
 
-	$inspect(data);
+	const isActiveForm = superForm(data.isActiveForm, {
+		validators: zod(isActiveSchema),
+		onUpdated: ({ form }) => {
+			if (!form.valid) return;
+			selectedUser!.isActive = form.data.isActive;
+			toast.success(`User is now ${selectedUser!.isActive ? 'active' : 'inactive'}`);
+		}
+	});
+	const { form: isActiveFormData, enhance: isActiveFormEnhance } = isActiveForm;
+
+	$effect(() => {
+		$userNameFormData = { name: selectedUser?.name || '', id: selectedUser?.id || 0 };
+		$isActiveFormData = { isActive: selectedUser?.isActive || false, id: selectedUser?.id || 0 };
+	});
+
+	$inspect($userNameFormData);
+	$inspect($isActiveFormData);
 
 	function handleClickUserCard(user: UserData) {
 		isSheetOpen = true;
 		selectedUser = user;
-		form.form.set({ name: user.name });
 	}
 </script>
 
@@ -87,24 +103,32 @@
 				<div class="flex items-baseline gap-2">
 					{selectedUser!.name}
 					<button onclick={() => (isEditUserNamePopupOpen = true)}>
-						<Pencil size={16} class="cursor-pointer" />
+						<Pencil size={16} class="cursor-pointer hover:text-muted-foreground" />
 					</button>
 				</div>
 			</Sheet.Title>
 		</Sheet.Header>
 		{#if !selectedUser!.isSystemAdmin}
-			<div class="mt-4 flex items-center gap-2">
-				<Switch
-					id="airplane-mode"
-					checked={selectedUser!.isActive}
-					onCheckedChange={(isActive) => console.log('toggle', isActive)}
-				/>
-				<Label for="airplane-mode" class="cursor-pointer">
-					{selectedUser!.isActive ? 'Active' : 'Inactive'}
-				</Label>
-			</div>
+			<form action="?/active" use:isActiveFormEnhance method="POST">
+				<div class="mt-4 flex items-center gap-2">
+					<Switch
+						id="isActive"
+						type="submit"
+						includeInput
+						name="active"
+						bind:checked={$isActiveFormData.isActive}
+					/>
+					<Label for="isActive" class="cursor-pointer">
+						{selectedUser!.isActive ? 'Active' : 'Inactive'}
+					</Label>
+					<input type="hidden" name="id" value={$isActiveFormData.id} />
+				</div>
+			</form>
 		{/if}
-		<h3 class="my-4">SSH Keys</h3>
+		<div class="flex items-center justify-between">
+			<h3 class="my-4">SSH Keys</h3>
+			<CirclePlus class="cursor-pointer hover:text-muted-foreground" />
+		</div>
 		<div class="flex flex-col gap-4">
 			{#each selectedUser!.sshKeyData as key}
 				<div class="relative grid grid-cols-[auto_1fr] gap-2 bg-slate-600 p-4">
@@ -124,4 +148,4 @@
 	</Sheet.Content>
 </Sheet.Root>
 
-<EditUserNamePopup bind:open={isEditUserNamePopupOpen} {form} />
+<EditUserNamePopup bind:open={isEditUserNamePopupOpen} form={userNameForm} />

@@ -72,7 +72,26 @@ class SimpleDb {
 		}
 	}
 
-	async writeData() {}
+	async updateUser(userId: number, updatedUserData: Partial<UserData>): Promise<boolean> {
+		const userIndex = this.users.findIndex((user) => user.id === userId);
+		if (userIndex === -1) {
+			return false;
+		}
+		this.users[userIndex] = { ...this.users[userIndex], ...updatedUserData };
+		await this.writeData();
+		return true;
+	}
+
+	async writeData() {
+		try {
+			await fs.writeFile(
+				'/home/joshh/redsky/redsky/ssh-key-manager/static/users.json',
+				JSON.stringify(this.users, null, 2)
+			);
+		} catch (error) {
+			console.error('Error writing users data: ', error);
+		}
+	}
 }
 
 const simpleDb = new SimpleDb();
