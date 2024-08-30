@@ -7,15 +7,29 @@ export const loginSchema = z.object({
 export type LoginSchema = z.infer<typeof loginSchema>;
 
 export const userNameSchema = z.object({
-	id: z.number(),
+	userId: z.number(),
 	name: z.string().min(4, 'Minimum 4 characters')
 });
 
 export type UserNameSchema = z.infer<typeof userNameSchema>;
 
 export const isActiveSchema = z.object({
-	id: z.number(),
+	userId: z.number(),
 	isActive: z.boolean()
 });
 
 export type IsActiveSchema = z.infer<typeof isActiveSchema>;
+
+export const addSshKeySchema = z.object({
+	userId: z.number(),
+	sshKey: z.string().min(1, 'Invalid SSH Key')
+});
+
+export type AddSshKeySchema = z.infer<typeof addSshKeySchema>;
+
+export const deleteSshKeySchema = z.object({
+	userId: z.number(),
+	fingerprint: z.string().min(1, 'Invalid Fingerprint')
+});
+
+export type DeleteSshKeySchema = z.infer<typeof deleteSshKeySchema>;

@@ -39,11 +39,13 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/sshpk": "^1.17.4",
 		"bits-ui": "^0.21.13",
 		"clsx": "^2.1.1",
 		"jsonwebtoken": "^9.0.2",
 		"lucide-svelte": "^0.408.0",
 		"mode-watcher": "^0.3.1",
+		"sshpk": "^1.18.0",
 		"svelte-sonner": "^0.3.27",
 		"sveltekit-sse": "^0.13.5",
 		"tailwind-merge": "^2.5.2",

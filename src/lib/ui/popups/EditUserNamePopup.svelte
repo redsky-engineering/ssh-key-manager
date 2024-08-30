@@ -35,7 +35,7 @@
 				/>
 				{#if $errors.name}<span class="text-red-500">{$errors.name}</span>{/if}
 			</div>
-			<input type="hidden" name="id" value={$formData.id} />
+			<input type="hidden" name="id" value={$formData.userId} />
 			<Button variant="default" type="submit">Save</Button>
 		</form>
 	</Dialog.Content>

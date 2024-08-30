@@ -8,7 +8,8 @@ import { z } from 'zod';
 
 const sshKeyDataSchema = z.object({
 	comment: z.string(),
-	fingerPrint: z.string()
+	fingerPrint: z.string(),
+	publicKey: z.string()
 });
 
 const userDataSchema = z.object({
@@ -57,7 +58,7 @@ class SimpleDb {
 			// Parse the file content as JSON
 			const parsedUserData = JSON.parse(usersFileData);
 			this.users = userDataArraySchema.parse(parsedUserData);
-			console.log('this.users: ', this.users);
+			console.log(`Loaded ${this.users.length} users`);
 
 			const serversFileData = await fs.readFile(
 				'/home/joshh/redsky/redsky/ssh-key-manager/static/servers.json',
@@ -66,7 +67,7 @@ class SimpleDb {
 
 			const parsedServerData = JSON.parse(serversFileData);
 			this.servers = serverDataArraySchema.parse(parsedServerData);
-			console.log('this.servers: ', this.servers);
+			console.log(`Loaded ${this.servers.length} servers`);
 		} catch (error) {
 			console.error('Error loading initial data: ', error);
 		}
@@ -80,6 +81,10 @@ class SimpleDb {
 		this.users[userIndex] = { ...this.users[userIndex], ...updatedUserData };
 		await this.writeData();
 		return true;
+	}
+
+	getUser(userId: number): UserData | undefined {
+		return this.users.find((user) => user.id === userId);
 	}
 
 	async writeData() {

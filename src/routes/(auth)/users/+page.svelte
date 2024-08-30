@@ -5,9 +5,10 @@
 	import * as Sheet from '$lib/ui/sheet/index.js';
 	import { Switch } from '$lib/ui/switch/index.js';
 
-	import { isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
+	import { addSshKeySchema, isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
 	import type { UserData } from '$lib/server/simpleDb.js';
 	import * as Card from '$lib/ui/card/index.js';
+	import AddSshKeyPopup from '$lib/ui/popups/AddSshKeyPopup.svelte';
 	import EditUserNamePopup from '$lib/ui/popups/EditUserNamePopup.svelte';
 	import { CirclePlus, Key, Pencil, Server, Shield, Trash2 } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
@@ -20,10 +21,15 @@
 	let searchValue = $state('');
 	let isSheetOpen = $state(false);
 	let isEditUserNamePopupOpen = $state(false);
+	let isAddSshKeyPopupOpen = $state(false);
 	let selectedUser: UserData | null = $state(null);
 
 	let filteredUsers = $derived.by(() => {
-		return data.users.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase()));
+		return data.users
+			.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase()))
+			.sort((a, b) => {
+				return a.name.localeCompare(b.name);
+			});
 	});
 
 	const userNameForm = superForm(data.userNameForm, {
@@ -37,6 +43,20 @@
 	});
 	const { form: userNameFormData } = userNameForm;
 
+	const addSshKeyForm = superForm(data.addSshKeyForm, {
+		validators: zod(addSshKeySchema),
+		onUpdated: ({ form }) => {
+			if (!form.valid) {
+				if (form.message) toast.error(form.message);
+				return;
+			}
+			isAddSshKeyPopupOpen = false;
+			// Need to add in the new key that was added, most likely need to send back extra data from server
+			toast.success('SSH Key added successfully');
+		}
+	});
+	const { form: addSshKeyFormData } = addSshKeyForm;
+
 	const isActiveForm = superForm(data.isActiveForm, {
 		validators: zod(isActiveSchema),
 		onUpdated: ({ form }) => {
@@ -47,13 +67,32 @@
 	});
 	const { form: isActiveFormData, enhance: isActiveFormEnhance } = isActiveForm;
 
+	const deleteSshKeyForm = superForm(data.deleteSshKeyForm, {
+		onSubmit: async (data) => {
+			console.log(data);
+		},
+		onUpdated: ({ form }) => {
+			if (!form.valid) {
+				if (form.message) toast.error(form.message);
+				return;
+			}
+			selectedUser!.sshKeyData = selectedUser!.sshKeyData.filter(
+				(key) => key.fingerPrint !== form.data.fingerprint
+			);
+			toast.success('SSH Key deleted successfully');
+		}
+	});
+	const { enhance: deleteSshKeyFormEnhance } = deleteSshKeyForm;
+
 	$effect(() => {
-		$userNameFormData = { name: selectedUser?.name || '', id: selectedUser?.id || 0 };
-		$isActiveFormData = { isActive: selectedUser?.isActive || false, id: selectedUser?.id || 0 };
+		$userNameFormData = { name: selectedUser?.name || '', userId: selectedUser?.id || 0 };
+		$isActiveFormData = { isActive: selectedUser?.isActive || false, userId: selectedUser?.id || 0 };
+		$addSshKeyFormData = { sshKey: '', userId: selectedUser?.id || 0 };
 	});
 
 	$inspect($userNameFormData);
 	$inspect($isActiveFormData);
+	$inspect($addSshKeyFormData);
 
 	function handleClickUserCard(user: UserData) {
 		isSheetOpen = true;
@@ -115,19 +154,21 @@
 						id="isActive"
 						type="submit"
 						includeInput
-						name="active"
+						name="isActive"
 						bind:checked={$isActiveFormData.isActive}
 					/>
 					<Label for="isActive" class="cursor-pointer">
 						{selectedUser!.isActive ? 'Active' : 'Inactive'}
 					</Label>
-					<input type="hidden" name="id" value={$isActiveFormData.id} />
+					<input type="hidden" name="id" value={$isActiveFormData.userId} />
 				</div>
 			</form>
 		{/if}
 		<div class="flex items-center justify-between">
 			<h3 class="my-4">SSH Keys</h3>
-			<CirclePlus class="cursor-pointer hover:text-muted-foreground" />
+			<button onclick={() => (isAddSshKeyPopupOpen = true)}>
+				<CirclePlus class="cursor-pointer hover:text-muted-foreground" />
+			</button>
 		</div>
 		<div class="flex flex-col gap-4">
 			{#each selectedUser!.sshKeyData as key}
@@ -136,12 +177,16 @@
 					<p>{key.comment}</p>
 					<p class="text-orange-200">Finger Print</p>
 					<p class="text-wrap break-all">{key.fingerPrint}</p>
-					<button>
-						<Trash2
-							size={24}
-							class="absolute right-2 top-2 p-1 text-destructive hover:rounded-full hover:bg-slate-100"
-						/>
-					</button>
+					<form action="?/delete-ssh-key" method="POST" use:deleteSshKeyFormEnhance class="contents">
+						<input type="hidden" name="userId" value={selectedUser!.id} />
+						<input type="hidden" name="fingerprint" value={key.fingerPrint} />
+						<button type="submit">
+							<Trash2
+								size={24}
+								class="absolute right-2 top-2 p-1 text-destructive hover:rounded-full hover:bg-slate-100"
+							/>
+						</button>
+					</form>
 				</div>
 			{/each}
 		</div>
@@ -149,3 +194,4 @@
 </Sheet.Root>
 
 <EditUserNamePopup bind:open={isEditUserNamePopupOpen} form={userNameForm} />
+<AddSshKeyPopup bind:open={isAddSshKeyPopupOpen} form={addSshKeyForm} />
