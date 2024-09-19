@@ -3,7 +3,7 @@
     "id": 1,
     "isSystemAdmin": true,
     "isActive": true,
-    "name": "Alice",
+    "name": "Alicia Keys",
     "sshKeyData": [
       {
         "comment": "Alice's SSH Key",
