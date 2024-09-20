@@ -37,10 +37,6 @@
 		const staleTime = Date.now() - new Date(server.lastHeartbeatOn).getTime();
 		return staleTime < 3 * 60 * 1000;
 	}
-
-	function handleAddUsersToServer(userIds: number[]) {
-		console.log('Adding users to server', userIds);
-	}
 </script>
 
 <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -126,7 +122,7 @@
 						const index = data.servers.findIndex((server) => server.id === selectedServerId);
 						selectedServerId = data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
 					}}
-					onAddUsersToServer={handleAddUsersToServer}
+					addUsersToServer={data.addUsersToServerForm.data}
 				/>
 			{:else}
 				<h3>No server selected</h3>

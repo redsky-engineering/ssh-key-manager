@@ -33,3 +33,10 @@ export const deleteSshKeySchema = z.object({
 });
 
 export type DeleteSshKeySchema = z.infer<typeof deleteSshKeySchema>;
+
+export const addUsersToServerSchema = z.object({
+	userIds: z.array(z.number()).min(1, 'Please select at least one user'),
+	serverId: z.number()
+});
+
+export type AddUsersToServerSchema = z.infer<typeof addUsersToServerSchema>;

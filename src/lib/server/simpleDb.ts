@@ -6,6 +6,7 @@
 import { promises as fs } from 'fs';
 import { z } from 'zod';
 import { STORAGE_PATH } from '$env/static/private';
+import path from 'path';
 
 if (!STORAGE_PATH) {
 	throw new Error('STORAGE_PATH is not set');
@@ -55,21 +56,16 @@ class SimpleDb {
 	async loadInitialData() {
 		try {
 			// Read the file asynchronously
-			const usersFileData = await fs.readFile(
-				STORAGE_PATH + '/users.json',
-				'utf8'
-			);
+			const usersFilePath = path.join(STORAGE_PATH, 'users.json');
+			const serversFilePath = path.join(STORAGE_PATH, 'servers.json');
 
+			const usersFileData = await fs.readFile(usersFilePath, 'utf8');
 			// Parse the file content as JSON
 			const parsedUserData = JSON.parse(usersFileData);
 			this.users = userDataArraySchema.parse(parsedUserData);
 			console.log(`Loaded ${this.users.length} users`);
 
-			const serversFileData = await fs.readFile(
-				STORAGE_PATH + '/servers.json',
-				'utf8'
-			);
-
+			const serversFileData = await fs.readFile(serversFilePath, 'utf8');
 			const parsedServerData = JSON.parse(serversFileData);
 			this.servers = serverDataArraySchema.parse(parsedServerData);
 			console.log(`Loaded ${this.servers.length} servers`);
@@ -84,7 +80,7 @@ class SimpleDb {
 			return false;
 		}
 		this.users[userIndex] = { ...this.users[userIndex], ...updatedUserData };
-		await this.writeData();
+		await this.writeData('users', this.users);
 		return true;
 	}
 
@@ -92,14 +88,31 @@ class SimpleDb {
 		return this.users.find((user) => user.id === userId);
 	}
 
-	async writeData() {
+	getServer(serverId: number): ServerData | undefined {
+		return this.servers.find((server) => server.id === serverId);
+	}
+
+	async updateServer(serverId: number, updatedServerData: Partial<ServerData>): Promise<boolean> {
+		const serverIndex = this.servers.findIndex((server) => server.id === serverId);
+		
+		if (serverIndex === -1) {
+			return false;
+		}
+		
+		this.servers[serverIndex] = { ...this.servers[serverIndex], ...updatedServerData };
+		await this.writeData('servers', this.servers);
+		return true;
+	}
+
+	async writeData(fileName: string, data: object) {
 		try {
+			console.log(typeof data);
 			await fs.writeFile(
-				STORAGE_PATH + '/users.json',
-				JSON.stringify(this.users, null, 2)
+				path.join(STORAGE_PATH, `${fileName}.json`),
+				JSON.stringify(data, null, 2)
 			);
 		} catch (error) {
-			console.error('Error writing users data: ', error);
+			console.error(`Error writing ${fileName} data: `, error);
 		}
 	}
 }
