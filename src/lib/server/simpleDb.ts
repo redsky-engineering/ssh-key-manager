@@ -6,6 +6,7 @@
 import { promises as fs } from 'fs';
 import { z } from 'zod';
 import { STORAGE_PATH } from '$env/static/private';
+import path from 'path';
 
 if (!STORAGE_PATH) {
 	throw new Error('STORAGE_PATH is not set');
@@ -55,21 +56,16 @@ class SimpleDb {
 	async loadInitialData() {
 		try {
 			// Read the file asynchronously
-			const usersFileData = await fs.readFile(
-				STORAGE_PATH + '/users.json',
-				'utf8'
-			);
+			const usersFilePath = path.join(STORAGE_PATH, 'users.json');
+			const serversFilePath = path.join(STORAGE_PATH, 'servers.json');
 
+			const usersFileData = await fs.readFile(usersFilePath, 'utf8');
 			// Parse the file content as JSON
 			const parsedUserData = JSON.parse(usersFileData);
 			this.users = userDataArraySchema.parse(parsedUserData);
 			console.log(`Loaded ${this.users.length} users`);
 
-			const serversFileData = await fs.readFile(
-				STORAGE_PATH + '/servers.json',
-				'utf8'
-			);
-
+			const serversFileData = await fs.readFile(serversFilePath, 'utf8');
 			const parsedServerData = JSON.parse(serversFileData);
 			this.servers = serverDataArraySchema.parse(parsedServerData);
 			console.log(`Loaded ${this.servers.length} servers`);
@@ -112,7 +108,7 @@ class SimpleDb {
 		try {
 			console.log(typeof data);
 			await fs.writeFile(
-				`${STORAGE_PATH}/${fileName}.json`,
+				path.join(STORAGE_PATH, `${fileName}.json`),
 				JSON.stringify(data, null, 2)
 			);
 		} catch (error) {

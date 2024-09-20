@@ -37,7 +37,6 @@
 	const addUsersToServerForm = superForm(addUsersToServer, {
 		validators: zod(addUsersToServerSchema),
 		onUpdated: ({ form }) => {
-			console.log('form', form);
 			if (!form.valid) {
 				if (form.message) toast.error(form.message);
 				return;

@@ -6,14 +6,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { addUsersToServerSchema } from '$lib/schema/schema';
 
 export const actions: Actions = {
-	// Other actions...
-
 	'add-users-to-server': async ({ request }) => {
 		const form = await superValidate(request, zod(addUsersToServerSchema));
 		
 		if (!form.valid) return fail(400, { form });
-		console.log('form.data', form.data);
-
 	
 		const userIds = form.data.userIds;
 		if (!userIds) return message(form, 'No users selected', { status: 400 });
