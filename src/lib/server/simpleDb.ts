@@ -5,6 +5,11 @@
 
 import { promises as fs } from 'fs';
 import { z } from 'zod';
+import { STORAGE_PATH } from '$env/static/private';
+
+if (!STORAGE_PATH) {
+	throw new Error('STORAGE_PATH is not set');
+}
 
 const sshKeyDataSchema = z.object({
 	comment: z.string(),
@@ -51,7 +56,7 @@ class SimpleDb {
 		try {
 			// Read the file asynchronously
 			const usersFileData = await fs.readFile(
-				'/home/joshh/redsky/redsky/ssh-key-manager/static/users.json',
+				STORAGE_PATH + '/users.json',
 				'utf8'
 			);
 
@@ -61,7 +66,7 @@ class SimpleDb {
 			console.log(`Loaded ${this.users.length} users`);
 
 			const serversFileData = await fs.readFile(
-				'/home/joshh/redsky/redsky/ssh-key-manager/static/servers.json',
+				STORAGE_PATH + '/servers.json',
 				'utf8'
 			);
 
@@ -90,7 +95,7 @@ class SimpleDb {
 	async writeData() {
 		try {
 			await fs.writeFile(
-				'/home/joshh/redsky/redsky/ssh-key-manager/static/users.json',
+				STORAGE_PATH + '/users.json',
 				JSON.stringify(this.users, null, 2)
 			);
 		} catch (error) {
