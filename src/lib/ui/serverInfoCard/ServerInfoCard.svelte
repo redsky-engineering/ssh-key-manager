@@ -15,35 +15,44 @@
 	import * as Pagination from '$lib/ui/pagination/index.js';
 	import * as Select from '$lib/ui/select/index.js';
 	import { Separator } from '$lib/ui/separator/index.js';
-	import type { SuperForm } from 'sveltekit-superforms';
-	import type { AddUsersToServerSchema } from '$lib/schema/schema';
+	import { superForm } from 'sveltekit-superforms';
+	import { toast } from 'svelte-sonner';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import type { z } from 'zod';
+	import { addUsersToServerSchema } from '$lib/schema/schema';
 
 	interface Props {
 		serverInfo: ServerData;
 		users: UserData[];
 		onNextServer: () => void;
 		onPreviousServer: () => void;
-		form: SuperForm<AddUsersToServerSchema>;
-		// onAddUsersToServer: (userIds: number[]) => void;
+		addUsersToServer: z.infer<typeof addUsersToServerSchema>;
 	}
 
-	let { serverInfo, users, onNextServer, onPreviousServer, form }: Props = $props();
-
-	const { enhance, form: formData, errors, constraints } = form;
-
-	function clearErrors() {
-		$errors.userIds = [];
-	}
-
+	let { serverInfo, users, onNextServer, onPreviousServer, addUsersToServer }: Props = $props();
 	let isAddToUsersDialogOpen = $state(false);
-	// let userIdsToAdd = $state<number[]>([]);
+	let userIdsToAdd = $state<number[]>([]);
 
 	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.userIds.find((id) => id === user.id)));
+	const addUsersToServerForm = superForm(addUsersToServer, {
+		validators: zod(addUsersToServerSchema),
+		onUpdated: ({ form }) => {
+			console.log('form', form);
+			if (!form.valid) {
+				if (form.message) toast.error(form.message);
+				return;
+			}
+			toast.success('Users added to server successfully');
+			userIdsToAdd = [];
+			isAddToUsersDialogOpen = false;
+		}
+	});
 
-	// function handleAddUsersToServer() {
-	// onAddUsersToServer(userIdsToAdd);
-	// isAddToUsersDialogOpen = false;
-	// }
+	const { enhance, form: addUsersToServerFormData, errors, constraints } = addUsersToServerForm;
+
+	$effect(() => {
+		$addUsersToServerFormData = { userIds: userIdsToAdd, serverId: serverInfo.id };
+	});
 </script>
 
 <Card.Root class="overflow-hidden">
@@ -118,7 +127,11 @@
 						</li>
 					{/if}
 				{/each}
-				<Dialog.Root closeOnOutsideClick={false} bind:open={isAddToUsersDialogOpen}>
+				<Dialog.Root
+					closeOnOutsideClick={false}
+					onOpenChange={() => ($errors.userIds = undefined)}
+					bind:open={isAddToUsersDialogOpen}
+				>
 					<Dialog.Trigger class={buttonVariants({ variant: 'secondary', size: 'sm' })}>
 						Add User
 					</Dialog.Trigger>
@@ -127,7 +140,15 @@
 							<Dialog.Header>
 								<Dialog.Title class="mb-2">Who do you want to add?</Dialog.Title>
 								<Dialog.Description>
-									<Select.Root multiple>
+									<Select.Root
+										multiple
+										onSelectedChange={(selected) => {
+											if (selected) {
+												const selectedItems = selected as { value: number; label: string }[];
+												userIdsToAdd = selectedItems.map((item) => item.value);
+											}
+										}}
+									>
 										<Select.Trigger class="w-[100%]">
 											<Select.Value placeholder="Select a user" />
 										</Select.Trigger>
@@ -140,21 +161,28 @@
 												{/each}
 											</Select.Group>
 										</Select.Content>
-										<Select.Input name="userIds" />
 									</Select.Root>
 								</Dialog.Description>
 								{#if $errors.userIds}<span class="pl-2 text-sm text-red-500">
-										{$errors.userIds}
+										{$errors.userIds._errors}
 									</span>{/if}
 							</Dialog.Header>
 							<Dialog.Footer class="gap-2">
+								{#each userIdsToAdd as tag, index}
+									<input
+										type="hidden"
+										name="userIds"
+										bind:value={userIdsToAdd[index]}
+										{...$constraints.userIds}
+									/>
+								{/each}
 								<input type="hidden" name="serverId" value={serverInfo.id} />
 								<Button
 									class="w-full"
 									variant="outline"
 									onclick={() => {
 										isAddToUsersDialogOpen = false;
-										clearErrors();
+										userIdsToAdd = [];
 									}}
 								>
 									Cancel
