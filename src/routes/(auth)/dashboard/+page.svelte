@@ -13,6 +13,10 @@
 	import * as Tabs from '$lib/ui/tabs/index.js';
 	import { cn } from '$lib/utils.js';
 	import type { PageData } from './$types.js';
+	import { superForm } from 'sveltekit-superforms';
+	import { toast } from 'svelte-sonner';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { addUsersToServerSchema } from '$lib/schema/schema';
 
 	let { data }: { data: PageData } = $props();
 
@@ -37,6 +41,18 @@
 		const staleTime = Date.now() - new Date(server.lastHeartbeatOn).getTime();
 		return staleTime < 3 * 60 * 1000;
 	}
+
+	const addUserToServerForm = superForm(data.addUsersToServerForm, {
+		validators: zod(addUsersToServerSchema),
+		onUpdated: ({ form }) => {
+			// if (!form.valid) return;
+			if (!form.valid) {
+				if (form.message) toast.error(form.message);
+				return;
+			}
+			toast.success('Users added to server successfully');
+		}
+	});
 
 	function handleAddUsersToServer(userIds: number[]) {
 		console.log('Adding users to server', userIds);
@@ -126,7 +142,7 @@
 						const index = data.servers.findIndex((server) => server.id === selectedServerId);
 						selectedServerId = data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
 					}}
-					onAddUsersToServer={handleAddUsersToServer}
+					form={addUserToServerForm}
 				/>
 			{:else}
 				<h3>No server selected</h3>

@@ -15,25 +15,35 @@
 	import * as Pagination from '$lib/ui/pagination/index.js';
 	import * as Select from '$lib/ui/select/index.js';
 	import { Separator } from '$lib/ui/separator/index.js';
+	import type { SuperForm } from 'sveltekit-superforms';
+	import type { AddUsersToServerSchema } from '$lib/schema/schema';
 
 	interface Props {
 		serverInfo: ServerData;
 		users: UserData[];
 		onNextServer: () => void;
 		onPreviousServer: () => void;
-		onAddUsersToServer: (userIds: number[]) => void;
+		form: SuperForm<AddUsersToServerSchema>;
+		// onAddUsersToServer: (userIds: number[]) => void;
 	}
-	let { serverInfo, users, onNextServer, onPreviousServer, onAddUsersToServer }: Props = $props();
+
+	let { serverInfo, users, onNextServer, onPreviousServer, form }: Props = $props();
+
+	const { enhance, form: formData, errors, constraints } = form;
+
+	function clearErrors() {
+		$errors.userIds = [];
+	}
 
 	let isAddToUsersDialogOpen = $state(false);
-	let userIdsToAdd = $state<number[]>([]);
+	// let userIdsToAdd = $state<number[]>([]);
 
 	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.userIds.find((id) => id === user.id)));
 
-	function handleAddUsersToServer() {
-		onAddUsersToServer(userIdsToAdd);
-		isAddToUsersDialogOpen = false;
-	}
+	// function handleAddUsersToServer() {
+	// onAddUsersToServer(userIdsToAdd);
+	// isAddToUsersDialogOpen = false;
+	// }
 </script>
 
 <Card.Root class="overflow-hidden">
@@ -113,38 +123,45 @@
 						Add User
 					</Dialog.Trigger>
 					<Dialog.Content class="w-[90%] max-w-sm">
-						<Dialog.Header>
-							<Dialog.Title class="mb-2">Who do you want to add?</Dialog.Title>
-							<Dialog.Description>
-								<Select.Root
-									multiple
-									onSelectedChange={(selected) => {
-										if (selected) {
-											const selectedItems = selected as { value: number; label: string }[];
-											userIdsToAdd = selectedItems.map((item) => item.value);
-										}
+						<form method="POST" action="?/add-users-to-server" use:enhance class="grid gap-4">
+							<Dialog.Header>
+								<Dialog.Title class="mb-2">Who do you want to add?</Dialog.Title>
+								<Dialog.Description>
+									<Select.Root multiple>
+										<Select.Trigger class="w-[100%]">
+											<Select.Value placeholder="Select a user" />
+										</Select.Trigger>
+										<Select.Content>
+											<Select.Group>
+												{#each usersAvailableToAdd as user}
+													<Select.Item value={user.id} label={user.name}>
+														{user.name}
+													</Select.Item>
+												{/each}
+											</Select.Group>
+										</Select.Content>
+										<Select.Input name="userIds" />
+									</Select.Root>
+								</Dialog.Description>
+								{#if $errors.userIds}<span class="pl-2 text-sm text-red-500">
+										{$errors.userIds}
+									</span>{/if}
+							</Dialog.Header>
+							<Dialog.Footer class="gap-2">
+								<input type="hidden" name="serverId" value={serverInfo.id} />
+								<Button
+									class="w-full"
+									variant="outline"
+									onclick={() => {
+										isAddToUsersDialogOpen = false;
+										clearErrors();
 									}}
 								>
-									<Select.Trigger class="w-[100%]">
-										<Select.Value placeholder="Select a user" />
-									</Select.Trigger>
-									<Select.Content>
-										<Select.Group>
-											{#each usersAvailableToAdd as user}
-												<Select.Item value={user.id} label={user.name}>{user.name}</Select.Item>
-											{/each}
-										</Select.Group>
-									</Select.Content>
-									<Select.Input name="usersToAdd" />
-								</Select.Root>
-							</Dialog.Description>
-						</Dialog.Header>
-						<Dialog.Footer class="gap-2">
-							<Button class="w-full" variant="outline" onclick={() => (isAddToUsersDialogOpen = false)}>
-								Cancel
-							</Button>
-							<Button class="w-full" onclick={handleAddUsersToServer}>Add Users</Button>
-						</Dialog.Footer>
+									Cancel
+								</Button>
+								<Button class="w-full" type="submit">Add Users</Button>
+							</Dialog.Footer>
+						</form>
 					</Dialog.Content>
 				</Dialog.Root>
 			</ul>

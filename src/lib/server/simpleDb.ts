@@ -84,7 +84,7 @@ class SimpleDb {
 			return false;
 		}
 		this.users[userIndex] = { ...this.users[userIndex], ...updatedUserData };
-		await this.writeData();
+		await this.writeData('users', this.users);
 		return true;
 	}
 
@@ -92,14 +92,31 @@ class SimpleDb {
 		return this.users.find((user) => user.id === userId);
 	}
 
-	async writeData() {
+	getServer(serverId: number): ServerData | undefined {
+		return this.servers.find((server) => server.id === serverId);
+	}
+
+	async updateServer(serverId: number, updatedServerData: Partial<ServerData>): Promise<boolean> {
+		const serverIndex = this.servers.findIndex((server) => server.id === serverId);
+		
+		if (serverIndex === -1) {
+			return false;
+		}
+		
+		this.servers[serverIndex] = { ...this.servers[serverIndex], ...updatedServerData };
+		await this.writeData('servers', this.servers);
+		return true;
+	}
+
+	async writeData(fileName: string, data: object) {
 		try {
+			console.log(typeof data);
 			await fs.writeFile(
-				STORAGE_PATH + '/users.json',
-				JSON.stringify(this.users, null, 2)
+				`${STORAGE_PATH}/${fileName}.json`,
+				JSON.stringify(data, null, 2)
 			);
 		} catch (error) {
-			console.error('Error writing users data: ', error);
+			console.error(`Error writing ${fileName} data: `, error);
 		}
 	}
 }
