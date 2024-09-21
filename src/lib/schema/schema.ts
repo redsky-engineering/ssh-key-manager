@@ -40,3 +40,10 @@ export const addUsersToServerSchema = z.object({
 });
 
 export type AddUsersToServerSchema = z.infer<typeof addUsersToServerSchema>;
+
+export const deleteUserFromServerSchema = z.object({
+	userId: z.number().min(1, 'Select at least one user'),
+	serverId: z.number()
+});
+
+export type DeleteUserFromServerSchema = z.infer<typeof deleteUserFromServerSchema>;

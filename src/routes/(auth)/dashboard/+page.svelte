@@ -123,6 +123,7 @@
 						selectedServerId = data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
 					}}
 					addUsersToServer={data.addUsersToServerForm.data}
+					deleteUserFromServer={data.deleteUserFromServerForm.data}
 				/>
 			{:else}
 				<h3>No server selected</h3>

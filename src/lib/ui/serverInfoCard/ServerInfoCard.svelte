@@ -19,7 +19,8 @@
 	import { toast } from 'svelte-sonner';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import type { z } from 'zod';
-	import { addUsersToServerSchema } from '$lib/schema/schema';
+	import { addUsersToServerSchema, deleteUserFromServerSchema } from '$lib/schema/schema';
+	import { Popover } from 'bits-ui';
 
 	interface Props {
 		serverInfo: ServerData;
@@ -27,13 +28,16 @@
 		onNextServer: () => void;
 		onPreviousServer: () => void;
 		addUsersToServer: z.infer<typeof addUsersToServerSchema>;
+		deleteUserFromServer: z.infer<typeof deleteUserFromServerSchema>;
 	}
 
-	let { serverInfo, users, onNextServer, onPreviousServer, addUsersToServer }: Props = $props();
+	let { serverInfo, users, onNextServer, onPreviousServer, addUsersToServer, deleteUserFromServer }: Props = $props();
 	let isAddToUsersDialogOpen = $state(false);
 	let userIdsToAdd = $state<number[]>([]);
+	let deleteUserForm: z.infer<typeof deleteUserFromServerSchema>;
 
 	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.userIds.find((id) => id === user.id)));
+
 	const addUsersToServerForm = superForm(addUsersToServer, {
 		validators: zod(addUsersToServerSchema),
 		onUpdated: ({ form }) => {
@@ -46,8 +50,19 @@
 			isAddToUsersDialogOpen = false;
 		}
 	});
-
 	const { enhance, form: addUsersToServerFormData, errors, constraints } = addUsersToServerForm;
+
+	const deleteUserFromServerForm = superForm(deleteUserFromServer, {
+		onUpdated: ({ form }) => {
+			if (!form.valid) {
+				if (form.message) toast.error(form.message);
+				return;
+			}
+
+			toast.success('User deleted successfully');
+		}
+	});
+	const { enhance: deleteUserFromServerFormEnhance } = deleteUserFromServerForm;
 
 	$effect(() => {
 		$addUsersToServerFormData = { userIds: userIdsToAdd, serverId: serverInfo.id };
@@ -122,7 +137,50 @@
 						{@const user = users.find((user) => user.id === userId)}
 						<li class="flex items-center justify-between">
 							<span class="text-muted-foreground">{user!.name}</span>
-							<Trash2 class="h-4 w-4 cursor-pointer text-muted-foreground hover:text-red-300" />
+							<form
+								id={`delete-user-form-${userId}`}
+								action="?/delete-user-from-server"
+								method="POST"
+								use:deleteUserFromServerFormEnhance
+								class="contents"
+							>
+								<Popover.Root>
+									<Popover.Trigger>
+										<Trash2
+											class="h-4 w-4 cursor-pointer text-muted-foreground hover:text-red-300"
+										/>
+									</Popover.Trigger>
+									<Popover.Content class="w-48 rounded-md border bg-popover p-0 shadow-md">
+										<Popover.Arrow class="fill-popover" />
+										<div class="space-y-2 p-3">
+											<p class="text-sm text-muted-foreground">
+												Are you sure you want to delete {user!.name} from {serverInfo.name}?
+											</p>
+											<div class="flex justify-end gap-2">
+												<Popover.Close>
+													<Button variant="outline">Cancel</Button>
+												</Popover.Close>
+												<Popover.Close>
+													<Button
+														on:click={() => {
+															const form = document.getElementById(
+																`delete-user-form-${userId}`
+															);
+															if (form) {
+																form.dispatchEvent(new Event('submit'));
+															}
+														}}
+													>
+														Delete
+													</Button>
+												</Popover.Close>
+											</div>
+										</div>
+									</Popover.Content>
+								</Popover.Root>
+								<input type="hidden" name="serverId" value={serverInfo.id} />
+								<input type="hidden" name="userId" value={userId} />
+							</form>
 						</li>
 					{/if}
 				{/each}
