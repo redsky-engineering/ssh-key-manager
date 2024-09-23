@@ -64,6 +64,15 @@
 	});
 	const { enhance: deleteUserFromServerFormEnhance } = deleteUserFromServerForm;
 
+	let forms: HTMLFormElement[] = [];
+
+	const handleDelete = (userId: number) => {
+		const currentForm = forms.filter((_, index) => index === userId);
+		if (currentForm) {
+			currentForm[0].submit();
+		}
+	};
+
 	$effect(() => {
 		$addUsersToServerFormData = { userIds: userIdsToAdd, serverId: serverInfo.id };
 	});
@@ -138,7 +147,7 @@
 						<li class="flex items-center justify-between">
 							<span class="text-muted-foreground">{user!.name}</span>
 							<form
-								id={`delete-user-form-${userId}`}
+								bind:this={forms[user!.id]}
 								action="?/delete-user-from-server"
 								method="POST"
 								use:deleteUserFromServerFormEnhance
@@ -161,18 +170,7 @@
 													<Button variant="outline">Cancel</Button>
 												</Popover.Close>
 												<Popover.Close>
-													<Button
-														on:click={() => {
-															const form = document.getElementById(
-																`delete-user-form-${userId}`
-															);
-															if (form) {
-																form.dispatchEvent(new Event('submit'));
-															}
-														}}
-													>
-														Delete
-													</Button>
+													<Button on:click={() => handleDelete(user!.id)}>Delete</Button>
 												</Popover.Close>
 											</div>
 										</div>
