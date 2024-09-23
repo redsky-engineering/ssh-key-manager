@@ -66,10 +66,9 @@
 
 	let forms: HTMLFormElement[] = [];
 
-	const handleDelete = (userId: number) => {
-		const currentForm = forms.filter((_, index) => index === userId);
-		if (currentForm) {
-			currentForm[0].submit();
+	const handleDelete = (form: HTMLFormElement) => {
+		if (form) {
+			form.submit();
 		}
 	};
 
@@ -147,11 +146,10 @@
 						<li class="flex items-center justify-between">
 							<span class="text-muted-foreground">{user!.name}</span>
 							<form
-								bind:this={forms[user!.id]}
 								action="?/delete-user-from-server"
 								method="POST"
 								use:deleteUserFromServerFormEnhance
-								class="contents"
+								bind:this={forms[user!.id]}
 							>
 								<Popover.Root>
 									<Popover.Trigger>
@@ -170,7 +168,9 @@
 													<Button variant="outline">Cancel</Button>
 												</Popover.Close>
 												<Popover.Close>
-													<Button on:click={() => handleDelete(user!.id)}>Delete</Button>
+													<Button on:click={() => handleDelete(forms[user!.id])}>
+														Delete
+													</Button>
 												</Popover.Close>
 											</div>
 										</div>
