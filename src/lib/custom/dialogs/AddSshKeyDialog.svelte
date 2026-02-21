@@ -12,6 +12,7 @@
 	};
 	let { open = $bindable(), form }: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	const { enhance, form: formData, errors, constraints } = form;
 </script>
 

@@ -94,11 +94,11 @@ class SimpleDb {
 
 	async updateServer(serverId: number, updatedServerData: Partial<ServerData>): Promise<boolean> {
 		const serverIndex = this.servers.findIndex((server) => server.id === serverId);
-		
+
 		if (serverIndex === -1) {
 			return false;
 		}
-		
+
 		this.servers[serverIndex] = { ...this.servers[serverIndex], ...updatedServerData };
 		await this.writeData('servers', this.servers);
 		return true;

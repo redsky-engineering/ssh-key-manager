@@ -8,25 +8,25 @@
 		user: {
 			name: 'Admin',
 			email: '',
-			avatar: '',
+			avatar: ''
 		},
 		navMain: [
 			{
 				title: 'Dashboard',
 				url: '/dashboard',
-				icon: HouseIcon,
+				icon: HouseIcon
 			},
 			{
 				title: 'Users',
 				url: '/users',
-				icon: UsersRoundIcon,
+				icon: UsersRoundIcon
 			},
 			{
 				title: 'Settings',
 				url: '/settings',
-				icon: Settings2Icon,
-			},
-		],
+				icon: Settings2Icon
+			}
+		]
 	};
 </script>
 
@@ -43,7 +43,7 @@
 	}: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
 
-<Sidebar.Root {collapsible} {...restProps}>
+<Sidebar.Root bind:ref {collapsible} {...restProps}>
 	<Sidebar.Header>
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>

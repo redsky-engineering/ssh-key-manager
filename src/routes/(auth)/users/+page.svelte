@@ -1,16 +1,19 @@
 <script lang="ts">
 	import { Badge } from '$lib/components/shadcn/ui/badge/index.js';
+	import { Button } from '$lib/components/shadcn/ui/button/index.js';
+	import { Input } from '$lib/components/shadcn/ui/input/index.js';
 	import { Label } from '$lib/components/shadcn/ui/label/index.js';
 	import * as Sheet from '$lib/components/shadcn/ui/sheet/index.js';
 	import { Switch } from '$lib/components/shadcn/ui/switch/index.js';
+	import * as Tabs from '$lib/components/shadcn/ui/tabs/index.js';
 	import Search from '@lucide/svelte/icons/search';
-	import { Input } from '$lib/components/shadcn/ui/input/index.js';
 
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import AddSshKeyPopup from '$lib/custom/dialogs/AddSshKeyDialog.svelte';
+	import ConfirmationDialog from '$lib/custom/dialogs/ConfirmationDialog.svelte';
 	import EditUserNamePopup from '$lib/custom/dialogs/EditUserNameDialog.svelte';
 	import { addSshKeySchema, isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
-	import type { UserData } from '$lib/server/simpleDb.js';
+	import type { ServerData, UserData } from '$lib/server/simpleDb.js';
 	import { CirclePlus, Key, Pencil, Server, Shield, Trash2 } from '@lucide/svelte/icons';
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
@@ -19,14 +22,17 @@
 
 	let { data }: { data: PageData } = $props();
 
-	// intentional ts error for hook testing
-	const broken: number = "this is not a number";
-
 	let searchValue = $state('');
 	let isSheetOpen = $state(false);
 	let isEditUserNamePopupOpen = $state(false);
 	let isAddSshKeyPopupOpen = $state(false);
+	let isDeleteSshKeyConfirmOpen = $state(false);
+	let pendingDeleteFingerprint: string | null = $state(null);
+	let isRemoveFromServerConfirmOpen = $state(false);
+	let pendingRemoveServerId: number | null = $state(null);
 	let selectedUser: UserData | null = $state(null);
+	let deleteFormEl: HTMLFormElement;
+	let removeFromServerFormEl: HTMLFormElement;
 
 	let filteredUsers = $derived.by(() => {
 		return data.users
@@ -34,6 +40,11 @@
 			.sort((a, b) => {
 				return a.name.localeCompare(b.name);
 			});
+	});
+
+	let selectedUserServers = $derived.by((): ServerData[] => {
+		if (!selectedUser) return [];
+		return data.servers.filter((server) => server.userIds.includes(selectedUser!.id));
 	});
 
 	// svelte-ignore state_referenced_locally
@@ -92,15 +103,66 @@
 	});
 	const { enhance: deleteSshKeyFormEnhance } = deleteSshKeyForm;
 
+	// svelte-ignore state_referenced_locally
+	const removeUserFromServerForm = superForm(data.deleteUserFromServerForm, {
+		onUpdated: ({ form }) => {
+			if (!form.valid) {
+				if (form.message) toast.error(form.message);
+				return;
+			}
+			const server = data.servers.find((s) => s.id === form.data.serverId);
+			if (server) {
+				server.userIds = server.userIds.filter((id) => id !== form.data.userId);
+			}
+			toast.success('Server access removed successfully');
+		}
+	});
+	const { enhance: removeUserFromServerFormEnhance } = removeUserFromServerForm;
+
 	$effect(() => {
 		$userNameFormData = { name: selectedUser?.name || '', userId: selectedUser?.id || 0 };
-		$isActiveFormData = { isActive: selectedUser?.isActive || false, userId: selectedUser?.id || 0 };
+		$isActiveFormData = {
+			isActive: selectedUser?.isActive || false,
+			userId: selectedUser?.id || 0
+		};
 		$addSshKeyFormData = { sshKey: '', userId: selectedUser?.id || 0 };
 	});
 
 	function handleClickUserCard(user: UserData) {
 		isSheetOpen = true;
 		selectedUser = user;
+	}
+
+	function onDeleteSshKeyClick(fingerprint: string) {
+		pendingDeleteFingerprint = fingerprint;
+		isDeleteSshKeyConfirmOpen = true;
+	}
+
+	function onConfirmDeleteSshKey() {
+		deleteFormEl.requestSubmit();
+		isDeleteSshKeyConfirmOpen = false;
+		pendingDeleteFingerprint = null;
+	}
+
+	function onCancelDeleteSshKey() {
+		isDeleteSshKeyConfirmOpen = false;
+		pendingDeleteFingerprint = null;
+	}
+
+	function onRemoveFromServerClick(serverId: number) {
+		pendingRemoveServerId = serverId;
+		isRemoveFromServerConfirmOpen = true;
+	}
+
+	function onConfirmRemoveFromServer() {
+		removeFromServerFormEl.requestSubmit();
+		isRemoveFromServerConfirmOpen = false;
+		pendingRemoveServerId = null;
+	}
+
+	function onCancelRemoveFromServer() {
+		isRemoveFromServerConfirmOpen = false;
+		pendingRemoveServerId = null;
 	}
 </script>
 
@@ -124,7 +186,10 @@
 			</Card.Header>
 			<Card.Footer class="flex justify-between">
 				<div class="flex gap-2"><Key /> {user.sshKeyData.length}</div>
-				<div class="flex gap-2"><Server /> 3</div>
+				<div class="flex gap-2">
+					<Server />
+					{data.servers.filter((s) => s.userIds.includes(user.id)).length}
+				</div>
 			</Card.Footer>
 		</Card.Root>
 	</button>
@@ -149,55 +214,155 @@
 
 <Sheet.Root bind:open={isSheetOpen}>
 	<Sheet.Content side="right" class="sm:max-w-lg">
-		<Sheet.Header>
-			<Sheet.Title>
-				<div class="flex items-baseline gap-2">
+		<Sheet.Header class="px-6 pt-6 pb-4">
+			<Sheet.Title class="text-2xl">
+				<div class="flex items-center gap-2">
 					{selectedUser!.name}
-					<button onclick={() => (isEditUserNamePopupOpen = true)}>
-						<Pencil size={16} class="hover:text-muted-foreground cursor-pointer" />
-					</button>
+					<Button
+						size="icon"
+						variant="ghost"
+						class="size-7"
+						onclick={() => (isEditUserNamePopupOpen = true)}
+					>
+						<Pencil class="size-4" />
+					</Button>
 				</div>
 			</Sheet.Title>
 		</Sheet.Header>
-		{#if !selectedUser!.isSystemAdmin}
-			<form action="?/active" use:isActiveFormEnhance method="POST">
-				<div class="mt-4 flex items-center gap-2">
-					<Switch id="isActive" type="submit" name="isActive" bind:checked={$isActiveFormData.isActive} />
-					<Label for="isActive" class="cursor-pointer">
-						{selectedUser!.isActive ? 'Active' : 'Inactive'}
-					</Label>
-					<input type="hidden" name="id" value={$isActiveFormData.userId} />
-				</div>
-			</form>
-		{/if}
-		<div class="flex items-center justify-between">
-			<h3 class="my-4">SSH Keys</h3>
-			<button onclick={() => (isAddSshKeyPopupOpen = true)}>
-				<CirclePlus class="hover:text-muted-foreground cursor-pointer" />
-			</button>
-		</div>
-		<div class="flex flex-col gap-4">
-			{#each selectedUser!.sshKeyData as key}
-				<div class="relative grid grid-cols-[auto_1fr] gap-2 bg-slate-600 p-4">
-					<p class="text-orange-200">Comment</p>
-					<p>{key.comment}</p>
-					<p class="text-orange-200">Finger Print</p>
-					<p class="text-wrap break-all">{key.fingerPrint}</p>
-					<form action="?/delete-ssh-key" method="POST" use:deleteSshKeyFormEnhance class="contents">
-						<input type="hidden" name="userId" value={selectedUser!.id} />
-						<input type="hidden" name="fingerprint" value={key.fingerPrint} />
-						<button type="submit">
-							<Trash2
-								size={24}
-								class="text-destructive absolute top-2 right-2 p-1 hover:rounded-full hover:bg-slate-100"
+		<div class="flex flex-col gap-4 px-6 py-4">
+			{#if !selectedUser!.isSystemAdmin}
+				<div class="rounded-lg border p-4">
+					<form action="?/active" use:isActiveFormEnhance method="POST">
+						<div class="flex items-center gap-3">
+							<Switch
+								id="isActive"
+								type="submit"
+								name="isActive"
+								bind:checked={$isActiveFormData.isActive}
 							/>
-						</button>
+							<Label for="isActive" class="cursor-pointer font-medium">
+								{selectedUser!.isActive ? 'Active' : 'Inactive'}
+							</Label>
+							<input type="hidden" name="id" value={$isActiveFormData.userId} />
+						</div>
 					</form>
 				</div>
-			{/each}
+			{/if}
+			<Tabs.Root value="servers">
+				<Tabs.List class="w-full">
+					<Tabs.Trigger value="servers" class="flex-1">
+						<Server class="mr-1.5 size-4" />
+						Servers
+					</Tabs.Trigger>
+					<Tabs.Trigger value="ssh-keys" class="flex-1">
+						<Key class="mr-1.5 size-4" />
+						SSH Keys
+					</Tabs.Trigger>
+				</Tabs.List>
+				<Tabs.Content value="servers" class="mt-3">
+					<div class="flex flex-col gap-2">
+						{#each selectedUserServers as server (server.id)}
+							<div class="relative rounded-lg border p-4">
+								<Button
+									type="button"
+									size="icon"
+									variant="ghost"
+									class="text-destructive hover:text-destructive absolute top-2 right-2 size-7"
+									onclick={() => onRemoveFromServerClick(server.id)}
+								>
+									<Trash2 class="size-4" />
+								</Button>
+								<div class="grid gap-1 pr-8">
+									<p class="text-sm font-medium">{server.name}</p>
+									<p class="text-muted-foreground font-mono text-xs">{server.ipAddress}</p>
+								</div>
+							</div>
+						{/each}
+						{#if selectedUserServers.length === 0}
+							<p class="text-muted-foreground py-6 text-center text-sm">No servers assigned yet.</p>
+						{/if}
+					</div>
+				</Tabs.Content>
+				<Tabs.Content value="ssh-keys" class="mt-3">
+					<div class="flex flex-col gap-2">
+						<div class="flex justify-end">
+							<Button variant="outline" onclick={() => (isAddSshKeyPopupOpen = true)}>
+								<CirclePlus class="size-4" />
+								Add SSH Key
+							</Button>
+						</div>
+						{#each selectedUser!.sshKeyData as key (key.fingerPrint)}
+							<div class="relative rounded-lg border p-4">
+								<Button
+									type="button"
+									size="icon"
+									variant="ghost"
+									class="text-destructive hover:text-destructive absolute top-2 right-2 size-7"
+									onclick={() => onDeleteSshKeyClick(key.fingerPrint)}
+								>
+									<Trash2 class="size-4" />
+								</Button>
+								<div class="grid gap-2 pr-8">
+									<div>
+										<p class="text-muted-foreground text-xs">Comment</p>
+										<p class="text-sm font-medium">{key.comment}</p>
+									</div>
+									<div>
+										<p class="text-muted-foreground text-xs">Fingerprint</p>
+										<p class="font-mono text-xs break-all">{key.fingerPrint}</p>
+									</div>
+								</div>
+							</div>
+						{/each}
+						{#if selectedUser!.sshKeyData.length === 0}
+							<p class="text-muted-foreground py-6 text-center text-sm">No SSH keys added yet.</p>
+						{/if}
+					</div>
+				</Tabs.Content>
+			</Tabs.Root>
 		</div>
 	</Sheet.Content>
 </Sheet.Root>
 
+<form
+	bind:this={deleteFormEl}
+	action="?/delete-ssh-key"
+	method="POST"
+	use:deleteSshKeyFormEnhance
+	class="hidden"
+>
+	<input type="hidden" name="userId" value={selectedUser?.id} />
+	<input type="hidden" name="fingerprint" value={pendingDeleteFingerprint} />
+</form>
+
+<form
+	bind:this={removeFromServerFormEl}
+	action="?/remove-user-from-server"
+	method="POST"
+	use:removeUserFromServerFormEnhance
+	class="hidden"
+>
+	<input type="hidden" name="userId" value={selectedUser?.id} />
+	<input type="hidden" name="serverId" value={pendingRemoveServerId} />
+</form>
+
 <EditUserNamePopup bind:open={isEditUserNamePopupOpen} form={userNameForm} />
 <AddSshKeyPopup bind:open={isAddSshKeyPopupOpen} form={addSshKeyForm} />
+<ConfirmationDialog
+	bind:open={isDeleteSshKeyConfirmOpen}
+	title="Delete SSH Key"
+	description="Are you sure you want to delete this SSH key? This action cannot be undone."
+	isDestructive={true}
+	confirmButtonText="Delete"
+	onConfirm={onConfirmDeleteSshKey}
+	onCancel={onCancelDeleteSshKey}
+/>
+<ConfirmationDialog
+	bind:open={isRemoveFromServerConfirmOpen}
+	title="Remove Server Access"
+	description="Are you sure you want to remove this user's access to this server?"
+	isDestructive={true}
+	confirmButtonText="Remove"
+	onConfirm={onConfirmRemoveFromServer}
+	onCancel={onCancelRemoveFromServer}
+/>

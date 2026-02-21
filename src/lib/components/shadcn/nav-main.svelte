@@ -5,7 +5,7 @@
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 
 	let {
-		items,
+		items
 	}: {
 		items: {
 			title: string;
@@ -63,7 +63,10 @@
 				</Collapsible.Root>
 			{:else}
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton tooltipContent={item.title} isActive={$page.url.pathname === item.url}>
+					<Sidebar.MenuButton
+						tooltipContent={item.title}
+						isActive={$page.url.pathname === item.url}
+					>
 						{#snippet child({ props })}
 							<a href={item.url} {...props}>
 								{#if item.icon}

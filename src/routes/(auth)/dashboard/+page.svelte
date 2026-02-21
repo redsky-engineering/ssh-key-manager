@@ -17,11 +17,15 @@
 
 	let { data }: { data: PageData } = $props();
 
-	let selectedServerId: number | null = $derived(data.servers.length > 0 ? data.servers[0].id : null);
+	let selectedServerId: number | null = $derived(
+		data.servers.length > 0 ? data.servers[0].id : null
+	);
 	let searchValue = $state('');
 
 	let filteredServers = $derived.by(() => {
-		return data.servers.filter((server) => server.name.toLowerCase().includes(searchValue.toLowerCase()));
+		return data.servers.filter((server) =>
+			server.name.toLowerCase().includes(searchValue.toLowerCase())
+		);
 	});
 
 	let activeServers = $derived.by(() => {
@@ -129,7 +133,8 @@
 					}}
 					onPreviousServer={() => {
 						const index = data.servers.findIndex((server) => server.id === selectedServerId);
-						selectedServerId = data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
+						selectedServerId =
+							data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
 					}}
 					addUsersToServer={data.addUsersToServerForm.data}
 					deleteUserFromServer={data.deleteUserFromServerForm.data}

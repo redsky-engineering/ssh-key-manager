@@ -1,6 +1,16 @@
-import { addSshKeySchema, deleteSshKeySchema, isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
+import {
+	addSshKeySchema,
+	deleteSshKeySchema,
+	deleteUserFromServerSchema,
+	isActiveSchema,
+	userNameSchema
+} from '$lib/schema/schema.js';
 import simpleDb from '$lib/server/simpleDb.js';
-import { getPublicKeyComment, getPublicKeyFingerprint, isValidSshPublicKey } from '$lib/server/ssh.js';
+import {
+	getPublicKeyComment,
+	getPublicKeyFingerprint,
+	isValidSshPublicKey
+} from '$lib/server/ssh.js';
 import type { Actions } from '@sveltejs/kit';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -59,6 +69,26 @@ export const actions: Actions = {
 
 		return { form };
 	},
+	'remove-user-from-server': async ({ request }) => {
+		const form = await superValidate(request, zod4(deleteUserFromServerSchema));
+		if (!form.valid) return fail(400, { form });
+
+		const user = simpleDb.getUser(form.data.userId);
+		if (!user) return message(form, 'User not found', { status: 404 });
+
+		const server = simpleDb.getServer(form.data.serverId);
+		if (!server) return message(form, 'Server not found', { status: 404 });
+
+		if (!server.userIds.includes(form.data.userId)) {
+			return message(form, 'User not a member of server', { status: 400 });
+		}
+
+		simpleDb.updateServer(form.data.serverId, {
+			userIds: server.userIds.filter((id) => id !== form.data.userId)
+		});
+
+		return { form };
+	},
 	'delete-ssh-key': async ({ request }) => {
 		const form = await superValidate(request, zod4(deleteSshKeySchema));
 		console.log('form', form);
@@ -86,6 +116,15 @@ export const load: PageServerLoad = async () => {
 	const isActiveForm = await superValidate(zod4(isActiveSchema));
 	const addSshKeyForm = await superValidate(zod4(addSshKeySchema));
 	const deleteSshKeyForm = await superValidate(zod4(deleteSshKeySchema));
+	const deleteUserFromServerForm = await superValidate(zod4(deleteUserFromServerSchema));
+	const servers = simpleDb.servers;
 
-	return { userNameForm, isActiveForm, addSshKeyForm, deleteSshKeyForm };
+	return {
+		userNameForm,
+		isActiveForm,
+		addSshKeyForm,
+		deleteSshKeyForm,
+		deleteUserFromServerForm,
+		servers
+	};
 };

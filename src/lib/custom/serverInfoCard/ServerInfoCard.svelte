@@ -31,12 +31,20 @@
 		deleteUserFromServer: z.infer<typeof deleteUserFromServerSchema>;
 	}
 
-	let { serverInfo, users, onNextServer, onPreviousServer, addUsersToServer, deleteUserFromServer }: Props = $props();
+	let {
+		serverInfo,
+		users,
+		onNextServer,
+		onPreviousServer,
+		addUsersToServer,
+		deleteUserFromServer
+	}: Props = $props();
 	let isAddToUsersDialogOpen = $state(false);
 	let userIdsToAdd = $state<number[]>([]);
-	let deleteUserForm: z.infer<typeof deleteUserFromServerSchema>;
 
-	const usersAvailableToAdd = $derived(users.filter((user) => !serverInfo.userIds.find((id) => id === user.id)));
+	const usersAvailableToAdd = $derived(
+		users.filter((user) => !serverInfo.userIds.find((id) => id === user.id))
+	);
 
 	// svelte-ignore state_referenced_locally
 	const addUsersToServerForm = superForm(addUsersToServer, {
@@ -53,6 +61,7 @@
 	});
 	const { enhance, form: addUsersToServerFormData, errors, constraints } = addUsersToServerForm;
 
+	// svelte-ignore state_referenced_locally
 	const deleteUserFromServerForm = superForm(deleteUserFromServer, {
 		onUpdated: ({ form }) => {
 			if (!form.valid) {
@@ -69,7 +78,7 @@
 
 	const handleDelete = (form: HTMLFormElement) => {
 		if (form) {
-			form.submit();
+			form.requestSubmit();
 		}
 	};
 
@@ -167,9 +176,7 @@
 													<Button variant="outline">Cancel</Button>
 												</Popover.Close>
 												<Popover.Close>
-													<Button onclick={() => handleDelete(forms[user!.id])}>
-														Delete
-													</Button>
+													<Button onclick={() => handleDelete(forms[user!.id])}>Delete</Button>
 												</Popover.Close>
 											</div>
 										</div>
@@ -181,7 +188,10 @@
 						</li>
 					{/if}
 				{/each}
-				<Dialog.Root onOpenChange={() => ($errors.userIds = undefined)} bind:open={isAddToUsersDialogOpen}>
+				<Dialog.Root
+					onOpenChange={() => ($errors.userIds = undefined)}
+					bind:open={isAddToUsersDialogOpen}
+				>
 					<Dialog.Trigger class={buttonVariants({ variant: 'secondary', size: 'sm' })}>
 						Add User
 					</Dialog.Trigger>
@@ -219,7 +229,7 @@
 									</span>{/if}
 							</Dialog.Header>
 							<Dialog.Footer class="gap-2">
-								{#each userIdsToAdd as tag, index}
+								{#each userIdsToAdd as _, index (index)}
 									<input
 										type="hidden"
 										name="userIds"
@@ -229,7 +239,6 @@
 								{/each}
 								<input type="hidden" name="serverId" value={serverInfo.id} />
 								<Button
-									class="w-full"
 									variant="outline"
 									onclick={() => {
 										isAddToUsersDialogOpen = false;
@@ -238,7 +247,7 @@
 								>
 									Cancel
 								</Button>
-								<Button class="w-full" type="submit">Add Users</Button>
+								<Button type="submit">Add Users</Button>
 							</Dialog.Footer>
 						</form>
 					</Dialog.Content>
@@ -248,7 +257,9 @@
 	</Card.Content>
 	<Card.Footer class="bg-muted/50 flex flex-row items-center border-t px-6 py-3">
 		<div class="text-muted-foreground text-xs">
-			Updated <time dateTime="2024-07-15T10:01:03">{AppUtils.getRelativeTime(serverInfo.lastHeartbeatOn)}</time>
+			Updated <time dateTime={serverInfo.lastHeartbeatOn}>
+				{AppUtils.getRelativeTime(serverInfo.lastHeartbeatOn)}
+			</time>
 		</div>
 		<Pagination.Root count={10} class="mr-0 ml-auto w-auto">
 			<Pagination.Content>

@@ -1,80 +1,74 @@
 [
-  {
-    "id": 1,
-    "isSystemAdmin": true,
-    "isActive": true,
-    "name": "Alicia Keys",
-    "sshKeyData": [
-      {
-        "comment": "Alice's SSH Key",
-        "fingerPrint": "00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF",
-        "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "isSystemAdmin": false,
-    "isActive": true,
-    "name": "Robert Johnsons",
-    "sshKeyData": [
-      {
-        "comment": "Bob's SSH Key",
-        "fingerPrint": "11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
-        "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
-      },
-      {
-        "comment": "Bob's SSH Key 2",
-        "fingerPrint": "11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
-        "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
-      }
-    ]
-  },
-  {
-    "id": 3,
-    "isSystemAdmin": false,
-    "isActive": true,
-    "name": "David",
-    "sshKeyData": [
-      {
-        "comment": "David's SSH Key",
-        "fingerPrint": "22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11",
-        "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
-      }
-    ]
-  },
-  {
-    "id": 4,
-    "isSystemAdmin": true,
-    "isActive": false,
-    "name": "Eva",
-    "sshKeyData": []
-  },
-  {
-    "id": 5,
-    "isSystemAdmin": false,
-    "isActive": true,
-    "name": "Frank",
-    "sshKeyData": [
-      {
-        "comment": "nate@DESKTOP-U173SEQ",
-        "fingerPrint": "SHA256:p37djRKuyV2P8CLbPMFKaLmYTM/9Umg0f2pGeoYsTSc",
-        "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCbJ3XKYjzqjd1BrNY9HOvlJWhnXh8iZPR7ws1dJQaP9036r0TA2V1pi69vlDuRGD2ytTk4qTy5ayL05bwxTwNpuQ1XpFntcwHooSurmnUxhs5vpUu2BEOjmQXzbcQZ3gxzSytIDrK2LdETp3r+bbF4WC3vBM+Hpmy6AzZrnnuyRR9qWfxm2gc0TfnIHCEawNcyrItxjjO9b0rqLJKmXQjd5wMUYA8bwDuuc2/B/OsmxwRK2NFI5gxe46NcRjLgfZQUQE4sQ0BLZRIJjz4TVPfmiMfP8vhNY1DGFjckFIsEtXY1ARl3+evGpAL9mzNbI4MmRYW3RsKVNMvQ+JQqYO+LjvbhgvFsWHOTLQytPoXhonMyGINroHOTF9NqUZa3twuB9D5wDuP0eDIrxvtV48DdfbX7O8/U2VUywtzgXZaG2sduAeb3W/f6BdJa2wvD1jU5BOfw4e5DKX5ndvOzzIPh1gOxAykHuq47PMWPAMRga09Cq9CE6g6Ci3ZqVRqQ8rs= nate@DESKTOP-U173SEQ"
-      }
-    ]
-  },
-  {
-    "id": 6,
-    "isSystemAdmin": true,
-    "isActive": false,
-    "name": "Grace",
-    "sshKeyData": []
-  },
-  {
-    "id": 7,
-    "isSystemAdmin": false,
-    "isActive": false,
-    "name": "John Wick",
-    "sshKeyData": []
-  }
+	{
+		"id": 1,
+		"isSystemAdmin": true,
+		"isActive": true,
+		"name": "Alicia Key",
+		"sshKeyData": [
+			{
+				"comment": "Alice's SSH Key",
+				"fingerPrint": "00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF",
+				"publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
+			}
+		]
+	},
+	{
+		"id": 2,
+		"isSystemAdmin": false,
+		"isActive": true,
+		"name": "Robert Johnsons",
+		"sshKeyData": [
+			{
+				"comment": "Bob's SSH Key",
+				"fingerPrint": "11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
+				"publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
+			},
+			{
+				"comment": "Bob's SSH Key 2",
+				"fingerPrint": "11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
+				"publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
+			}
+		]
+	},
+	{
+		"id": 3,
+		"isSystemAdmin": false,
+		"isActive": true,
+		"name": "David",
+		"sshKeyData": []
+	},
+	{
+		"id": 4,
+		"isSystemAdmin": true,
+		"isActive": false,
+		"name": "Eva",
+		"sshKeyData": []
+	},
+	{
+		"id": 5,
+		"isSystemAdmin": false,
+		"isActive": true,
+		"name": "Frank",
+		"sshKeyData": [
+			{
+				"comment": "nate@DESKTOP-U173SEQ",
+				"fingerPrint": "SHA256:p37djRKuyV2P8CLbPMFKaLmYTM/9Umg0f2pGeoYsTSc",
+				"publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCbJ3XKYjzqjd1BrNY9HOvlJWhnXh8iZPR7ws1dJQaP9036r0TA2V1pi69vlDuRGD2ytTk4qTy5ayL05bwxTwNpuQ1XpFntcwHooSurmnUxhs5vpUu2BEOjmQXzbcQZ3gxzSytIDrK2LdETp3r+bbF4WC3vBM+Hpmy6AzZrnnuyRR9qWfxm2gc0TfnIHCEawNcyrItxjjO9b0rqLJKmXQjd5wMUYA8bwDuuc2/B/OsmxwRK2NFI5gxe46NcRjLgfZQUQE4sQ0BLZRIJjz4TVPfmiMfP8vhNY1DGFjckFIsEtXY1ARl3+evGpAL9mzNbI4MmRYW3RsKVNMvQ+JQqYO+LjvbhgvFsWHOTLQytPoXhonMyGINroHOTF9NqUZa3twuB9D5wDuP0eDIrxvtV48DdfbX7O8/U2VUywtzgXZaG2sduAeb3W/f6BdJa2wvD1jU5BOfw4e5DKX5ndvOzzIPh1gOxAykHuq47PMWPAMRga09Cq9CE6g6Ci3ZqVRqQ8rs= nate@DESKTOP-U173SEQ"
+			}
+		]
+	},
+	{
+		"id": 6,
+		"isSystemAdmin": true,
+		"isActive": false,
+		"name": "Ralph",
+		"sshKeyData": []
+	},
+	{
+		"id": 7,
+		"isSystemAdmin": false,
+		"isActive": false,
+		"name": "John Wick",
+		"sshKeyData": []
+	}
 ]
