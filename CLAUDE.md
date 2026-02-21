@@ -51,8 +51,8 @@ This is a Svelte 5 + TypeScript frontend application with an Express backend.
 
 - `/src/routes` - SvelteKit file-based routes
 - `/src/lib/components` - Reusable UI components
-    - `/custom` - User-created components organized by type (card, dialog, drawer)
-    - `/shadcn/ui` - Shadcn components
+  - `/custom` - User-created components organized by type (card, dialog, drawer)
+  - `/shadcn/ui` - Shadcn components
 - `/src/lib/services` - Business logic and API layer (MANDATORY)
 - `/src/schema` - Zod validation schemas
 - `/src/lib/utils` - Utility functions

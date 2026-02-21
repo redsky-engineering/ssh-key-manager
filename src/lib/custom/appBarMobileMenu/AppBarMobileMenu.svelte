@@ -36,15 +36,24 @@
 					<KeyRound class="h-5 w-5" />
 					SSH Key Manager
 				</div>
-				<a href="##" class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5">
+				<a
+					href="##"
+					class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5"
+				>
 					<Home class="h-5 w-5" />
 					Dashboard
 				</a>
-				<a href="##" class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5">
+				<a
+					href="##"
+					class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5"
+				>
 					<UsersRound class="h-5 w-5" />
 					Users
 				</a>
-				<a href="##" class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5">
+				<a
+					href="##"
+					class="text-muted-foreground hover:text-foreground flex items-center gap-4 px-2.5"
+				>
 					<Settings class="h-5 w-5" />
 					Settings
 				</a>

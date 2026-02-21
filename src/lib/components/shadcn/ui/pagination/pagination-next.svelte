@@ -4,7 +4,11 @@
 	import { buttonVariants } from '$lib/components/shadcn/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 
-	let { ref = $bindable(null), class: className, ...restProps }: PaginationPrimitive.NextButtonProps = $props();
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: PaginationPrimitive.NextButtonProps = $props();
 </script>
 
 <PaginationPrimitive.NextButton

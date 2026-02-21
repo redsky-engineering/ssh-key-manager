@@ -24,7 +24,11 @@ export const handle = (async ({ event, resolve }) => {
 	return resolve(event);
 }) satisfies Handle;
 
-async function validateTokens(svelteFetch: typeof fetch, cookies: Cookies, locals: App.Locals): Promise<void> {
+async function validateTokens(
+	svelteFetch: typeof fetch,
+	cookies: Cookies,
+	locals: App.Locals
+): Promise<void> {
 	// The reason why we use svelteFetch here is that it will include the cookies that are set on the client side
 	const accessToken = cookies.get('accessToken') ?? '';
 	try {

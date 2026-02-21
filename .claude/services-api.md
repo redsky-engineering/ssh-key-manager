@@ -535,7 +535,9 @@ function nextPage() {
 ```typescript
 let searchQuery = $state('');
 
-let filteredUsers = $derived(users.filter((u) => u.firstName.toLowerCase().includes(searchQuery.toLowerCase())));
+let filteredUsers = $derived(
+	users.filter((u) => u.firstName.toLowerCase().includes(searchQuery.toLowerCase()))
+);
 
 $effect(() => {
 	// Debounced API call when search changes

@@ -12,7 +12,12 @@
 	import AddSshKeyPopup from '$lib/custom/dialogs/AddSshKeyDialog.svelte';
 	import ConfirmationDialog from '$lib/custom/dialogs/ConfirmationDialog.svelte';
 	import EditUserNamePopup from '$lib/custom/dialogs/EditUserNameDialog.svelte';
-	import { addSshKeySchema, deleteUserFromServerSchema, isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
+	import {
+		addSshKeySchema,
+		deleteUserFromServerSchema,
+		isActiveSchema,
+		userNameSchema
+	} from '$lib/schema/schema.js';
 	import type { ServerData, UserData } from '$lib/server/simpleDb.js';
 	import { CirclePlus, Key, Pencil, Server, Shield, Trash2 } from '@lucide/svelte/icons';
 	import { toast } from 'svelte-sonner';
@@ -121,7 +126,10 @@
 
 	$effect(() => {
 		$userNameFormData = { name: selectedUser?.name || '', userId: selectedUser?.id || 0 };
-		$isActiveFormData = { isActive: selectedUser?.isActive || false, userId: selectedUser?.id || 0 };
+		$isActiveFormData = {
+			isActive: selectedUser?.isActive || false,
+			userId: selectedUser?.id || 0
+		};
 		$addSshKeyFormData = { sshKey: '', userId: selectedUser?.id || 0 };
 	});
 
@@ -213,7 +221,12 @@
 			<Sheet.Title class="text-2xl">
 				<div class="flex items-center gap-2">
 					{selectedUser!.name}
-					<Button size="icon" variant="ghost" class="size-7" onclick={() => (isEditUserNamePopupOpen = true)}>
+					<Button
+						size="icon"
+						variant="ghost"
+						class="size-7"
+						onclick={() => (isEditUserNamePopupOpen = true)}
+					>
 						<Pencil class="size-4" />
 					</Button>
 				</div>
@@ -314,7 +327,13 @@
 	</Sheet.Content>
 </Sheet.Root>
 
-<form bind:this={deleteFormEl} action="?/delete-ssh-key" method="POST" use:deleteSshKeyFormEnhance class="hidden">
+<form
+	bind:this={deleteFormEl}
+	action="?/delete-ssh-key"
+	method="POST"
+	use:deleteSshKeyFormEnhance
+	class="hidden"
+>
 	<input type="hidden" name="userId" value={selectedUser?.id} />
 	<input type="hidden" name="fingerprint" value={pendingDeleteFingerprint} />
 </form>

@@ -34,7 +34,9 @@ export const actions: Actions = {
 		const server = simpleDb.getServer(form.data.serverId);
 		if (!server) return message(form, 'Server not found', { status: 404 });
 
-		simpleDb.updateServer(form.data.serverId, { userIds: server.userIds.filter((id) => id !== form.data.userId) });
+		simpleDb.updateServer(form.data.serverId, {
+			userIds: server.userIds.filter((id) => id !== form.data.userId)
+		});
 		return { form };
 	}
 };

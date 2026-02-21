@@ -36,7 +36,11 @@
 	import * as Sidebar from '$lib/components/shadcn/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
 
-	let { ref = $bindable(null), collapsible = 'icon', ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
+	let {
+		ref = $bindable(null),
+		collapsible = 'icon',
+		...restProps
+	}: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>

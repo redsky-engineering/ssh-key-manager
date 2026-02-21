@@ -6,7 +6,11 @@ import {
 	userNameSchema
 } from '$lib/schema/schema.js';
 import simpleDb from '$lib/server/simpleDb.js';
-import { getPublicKeyComment, getPublicKeyFingerprint, isValidSshPublicKey } from '$lib/server/ssh.js';
+import {
+	getPublicKeyComment,
+	getPublicKeyFingerprint,
+	isValidSshPublicKey
+} from '$lib/server/ssh.js';
 import type { Actions } from '@sveltejs/kit';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -108,5 +112,12 @@ export const load: PageServerLoad = async () => {
 	const deleteUserFromServerForm = await superValidate(zod4(deleteUserFromServerSchema));
 	const servers = simpleDb.servers;
 
-	return { userNameForm, isActiveForm, addSshKeyForm, deleteSshKeyForm, deleteUserFromServerForm, servers };
+	return {
+		userNameForm,
+		isActiveForm,
+		addSshKeyForm,
+		deleteSshKeyForm,
+		deleteUserFromServerForm,
+		servers
+	};
 };

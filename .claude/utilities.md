@@ -265,7 +265,10 @@ export default class AppUtils {
 	/**
 	 * Debounce a function
 	 */
-	static debounce<T extends (...args: any[]) => any>(fn: T, ms: number): (...args: Parameters<T>) => void {
+	static debounce<T extends (...args: any[]) => any>(
+		fn: T,
+		ms: number
+	): (...args: Parameters<T>) => void {
 		let timeoutId: ReturnType<typeof setTimeout>;
 
 		return function (...args: Parameters<T>) {
@@ -505,7 +508,12 @@ export function scrollToElement(elementId: string, offset: number = 0) {
 
 export function isInViewport(element: HTMLElement): boolean {
 	const rect = element.getBoundingClientRect();
-	return rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
+	return (
+		rect.top >= 0 &&
+		rect.left >= 0 &&
+		rect.bottom <= window.innerHeight &&
+		rect.right <= window.innerWidth
+	);
 }
 
 export function getScrollPercent(): number {
