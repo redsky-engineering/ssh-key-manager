@@ -2,6 +2,7 @@ import { JWT_SECRET } from '$env/static/private';
 import { isUnprotectedRoute, removeAuth } from '$lib/server/auth.js';
 import simpleDb from '$lib/server/simpleDb.js';
 // import serviceFactory from '$lib/services/serviceFactory.js';
+import { dev } from '$app/environment';
 import { type Cookies, type Handle, redirect } from '@sveltejs/kit';
 import type { JwtPayload } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
@@ -12,6 +13,10 @@ await simpleDb.loadInitialData();
 console.log('hooks on server....');
 
 export const handle = (async ({ event, resolve }) => {
+	if (dev && event.url.pathname === '/.well-known/appspecific/com.chrome.devtools.json') {
+		return new Response(undefined, { status: 404 });
+	}
+
 	await validateTokens(event.fetch, event.cookies, event.locals);
 	checkProtectedRoutes(event.url, event.cookies);
 

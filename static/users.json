@@ -3,7 +3,7 @@
     "id": 1,
     "isSystemAdmin": true,
     "isActive": true,
-    "name": "Alicia Keys",
+    "name": "Alicia Key",
     "sshKeyData": [
       {
         "comment": "Alice's SSH Key",
@@ -35,13 +35,7 @@
     "isSystemAdmin": false,
     "isActive": true,
     "name": "David",
-    "sshKeyData": [
-      {
-        "comment": "David's SSH Key",
-        "fingerPrint": "22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11",
-        "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQ6"
-      }
-    ]
+    "sshKeyData": []
   },
   {
     "id": 4,
@@ -67,7 +61,7 @@
     "id": 6,
     "isSystemAdmin": true,
     "isActive": false,
-    "name": "Grace",
+    "name": "Ralph",
     "sshKeyData": []
   },
   {

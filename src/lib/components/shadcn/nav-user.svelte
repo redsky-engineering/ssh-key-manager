@@ -3,12 +3,8 @@
 	import * as DropdownMenu from "$lib/components/shadcn/ui/dropdown-menu/index.js";
 	import * as Sidebar from "$lib/components/shadcn/ui/sidebar/index.js";
 	import { useSidebar } from "$lib/components/shadcn/ui/sidebar/index.js";
-	import BadgeCheckIcon from "@lucide/svelte/icons/badge-check";
-	import BellIcon from "@lucide/svelte/icons/bell";
 	import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
-	import CreditCardIcon from "@lucide/svelte/icons/credit-card";
 	import LogOutIcon from "@lucide/svelte/icons/log-out";
-	import SparklesIcon from "@lucide/svelte/icons/sparkles";
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
 	const sidebar = useSidebar();
@@ -54,28 +50,6 @@
 						</div>
 					</div>
 				</DropdownMenu.Label>
-				<DropdownMenu.Separator />
-				<DropdownMenu.Group>
-					<DropdownMenu.Item>
-						<SparklesIcon />
-						Upgrade to Pro
-					</DropdownMenu.Item>
-				</DropdownMenu.Group>
-				<DropdownMenu.Separator />
-				<DropdownMenu.Group>
-					<DropdownMenu.Item>
-						<BadgeCheckIcon />
-						Account
-					</DropdownMenu.Item>
-					<DropdownMenu.Item>
-						<CreditCardIcon />
-						Billing
-					</DropdownMenu.Item>
-					<DropdownMenu.Item>
-						<BellIcon />
-						Notifications
-					</DropdownMenu.Item>
-				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item>
 					<LogOutIcon />

@@ -53,6 +53,7 @@
 	});
 	const { enhance, form: addUsersToServerFormData, errors, constraints } = addUsersToServerForm;
 
+	// svelte-ignore state_referenced_locally
 	const deleteUserFromServerForm = superForm(deleteUserFromServer, {
 		onUpdated: ({ form }) => {
 			if (!form.valid) {
@@ -219,7 +220,7 @@
 									</span>{/if}
 							</Dialog.Header>
 							<Dialog.Footer class="gap-2">
-								{#each userIdsToAdd as tag, index}
+								{#each userIdsToAdd as _, index (index)}
 									<input
 										type="hidden"
 										name="userIds"
@@ -229,7 +230,6 @@
 								{/each}
 								<input type="hidden" name="serverId" value={serverInfo.id} />
 								<Button
-									class="w-full"
 									variant="outline"
 									onclick={() => {
 										isAddToUsersDialogOpen = false;
@@ -238,7 +238,7 @@
 								>
 									Cancel
 								</Button>
-								<Button class="w-full" type="submit">Add Users</Button>
+								<Button type="submit">Add Users</Button>
 							</Dialog.Footer>
 						</form>
 					</Dialog.Content>
