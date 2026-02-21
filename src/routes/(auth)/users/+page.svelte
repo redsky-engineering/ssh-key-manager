@@ -3,7 +3,8 @@
 	import { Label } from '$lib/components/shadcn/ui/label/index.js';
 	import * as Sheet from '$lib/components/shadcn/ui/sheet/index.js';
 	import { Switch } from '$lib/components/shadcn/ui/switch/index.js';
-	import AppBarMobileMenu from '$lib/custom/appBarMobileMenu/AppBarMobileMenu.svelte';
+	import Search from '@lucide/svelte/icons/search';
+	import { Input } from '$lib/components/shadcn/ui/input/index.js';
 
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import AddSshKeyPopup from '$lib/custom/dialogs/AddSshKeyDialog.svelte';
@@ -17,6 +18,9 @@
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
+
+	// intentional ts error for hook testing
+	const broken: number = "this is not a number";
 
 	let searchValue = $state('');
 	let isSheetOpen = $state(false);
@@ -94,10 +98,6 @@
 		$addSshKeyFormData = { sshKey: '', userId: selectedUser?.id || 0 };
 	});
 
-	$inspect($userNameFormData);
-	$inspect($isActiveFormData);
-	$inspect($addSshKeyFormData);
-
 	function handleClickUserCard(user: UserData) {
 		isSheetOpen = true;
 		selectedUser = user;
@@ -130,9 +130,17 @@
 	</button>
 {/snippet}
 
-<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-	<AppBarMobileMenu bind:searchValue />
-	<main class="grid flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:grid-cols-2 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+<div class="flex flex-col gap-4 p-4">
+	<div class="relative">
+		<Search class="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
+		<Input
+			type="search"
+			placeholder="Search users..."
+			class="bg-background w-full rounded-lg pl-8 md:w-[200px] lg:w-[336px]"
+			bind:value={searchValue}
+		/>
+	</div>
+	<main class="grid flex-1 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
 		{#each filteredUsers as user (user.id)}
 			{@render userCard(user)}
 		{/each}

@@ -1,14 +1,15 @@
 <script lang="ts">
 	import File from '@lucide/svelte/icons/file';
+	import Search from '@lucide/svelte/icons/search';
 
 	import AppUtils from '$lib/AppUtils.js';
 	import { Badge } from '$lib/components/shadcn/ui/badge/index.js';
 	import { Button } from '$lib/components/shadcn/ui/button/index.js';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
+	import { Input } from '$lib/components/shadcn/ui/input/index.js';
 	import { Progress } from '$lib/components/shadcn/ui/progress/index.js';
 	import * as Table from '$lib/components/shadcn/ui/table/index.js';
 	import * as Tabs from '$lib/components/shadcn/ui/tabs/index.js';
-	import AppBarMobileMenu from '$lib/custom/appBarMobileMenu/AppBarMobileMenu.svelte';
 	import ServerInfoCard from '$lib/custom/serverInfoCard/ServerInfoCard.svelte';
 	import type { ServerData } from '$lib/server/simpleDb.js';
 	import { cn } from '$lib/utils.js';
@@ -39,9 +40,17 @@
 	}
 </script>
 
-<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-	<AppBarMobileMenu bind:searchValue />
-	<main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+<div class="flex flex-col gap-4 p-4">
+	<div class="relative">
+		<Search class="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
+		<Input
+			type="search"
+			placeholder="Search servers..."
+			class="bg-background w-full rounded-lg pl-8 md:w-[200px] lg:w-[336px]"
+			bind:value={searchValue}
+		/>
+	</div>
+	<main class="grid flex-1 items-start gap-4 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
 		<div class="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
 			<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
 				<Card.Root>
