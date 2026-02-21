@@ -7,8 +7,7 @@ export function setAccessTokenCookie(cookies: Cookies, accessToken: string): voi
 	let payload: JwtPayload | undefined;
 	try {
 		payload = jwt.verify(accessToken, JWT_SECRET) as JwtPayload;
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	} catch (_) {
+	} catch {
 		throw new Error('Invalid accessToken, failed JWT verification');
 	}
 

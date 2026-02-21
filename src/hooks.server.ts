@@ -34,8 +34,7 @@ async function validateTokens(
 	try {
 		const payload = jwt.verify(accessToken, JWT_SECRET) as JwtPayload;
 		locals.userId = parseInt(payload.userId);
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	} catch (_) {
+	} catch {
 		if (accessToken) removeAuth(cookies, locals);
 	}
 }

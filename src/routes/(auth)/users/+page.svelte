@@ -12,12 +12,7 @@
 	import AddSshKeyPopup from '$lib/custom/dialogs/AddSshKeyDialog.svelte';
 	import ConfirmationDialog from '$lib/custom/dialogs/ConfirmationDialog.svelte';
 	import EditUserNamePopup from '$lib/custom/dialogs/EditUserNameDialog.svelte';
-	import {
-		addSshKeySchema,
-		deleteUserFromServerSchema,
-		isActiveSchema,
-		userNameSchema
-	} from '$lib/schema/schema.js';
+	import { addSshKeySchema, isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
 	import type { ServerData, UserData } from '$lib/server/simpleDb.js';
 	import { CirclePlus, Key, Pencil, Server, Shield, Trash2 } from '@lucide/svelte/icons';
 	import { toast } from 'svelte-sonner';
@@ -146,6 +141,7 @@
 	function onConfirmDeleteSshKey() {
 		deleteFormEl.requestSubmit();
 		isDeleteSshKeyConfirmOpen = false;
+		pendingDeleteFingerprint = null;
 	}
 
 	function onCancelDeleteSshKey() {
@@ -161,6 +157,7 @@
 	function onConfirmRemoveFromServer() {
 		removeFromServerFormEl.requestSubmit();
 		isRemoveFromServerConfirmOpen = false;
+		pendingRemoveServerId = null;
 	}
 
 	function onCancelRemoveFromServer() {

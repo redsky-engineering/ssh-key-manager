@@ -73,8 +73,15 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod4(deleteUserFromServerSchema));
 		if (!form.valid) return fail(400, { form });
 
+		const user = simpleDb.getUser(form.data.userId);
+		if (!user) return message(form, 'User not found', { status: 404 });
+
 		const server = simpleDb.getServer(form.data.serverId);
 		if (!server) return message(form, 'Server not found', { status: 404 });
+
+		if (!server.userIds.includes(form.data.userId)) {
+			return message(form, 'User not a member of server', { status: 400 });
+		}
 
 		simpleDb.updateServer(form.data.serverId, {
 			userIds: server.userIds.filter((id) => id !== form.data.userId)

@@ -41,7 +41,6 @@
 	}: Props = $props();
 	let isAddToUsersDialogOpen = $state(false);
 	let userIdsToAdd = $state<number[]>([]);
-	let deleteUserForm: z.infer<typeof deleteUserFromServerSchema>;
 
 	const usersAvailableToAdd = $derived(
 		users.filter((user) => !serverInfo.userIds.find((id) => id === user.id))
@@ -79,7 +78,7 @@
 
 	const handleDelete = (form: HTMLFormElement) => {
 		if (form) {
-			form.submit();
+			form.requestSubmit();
 		}
 	};
 
@@ -258,7 +257,7 @@
 	</Card.Content>
 	<Card.Footer class="bg-muted/50 flex flex-row items-center border-t px-6 py-3">
 		<div class="text-muted-foreground text-xs">
-			Updated <time dateTime="2024-07-15T10:01:03">
+			Updated <time dateTime={serverInfo.lastHeartbeatOn}>
 				{AppUtils.getRelativeTime(serverInfo.lastHeartbeatOn)}
 			</time>
 		</div>
