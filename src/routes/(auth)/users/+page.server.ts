@@ -1,4 +1,10 @@
-import { addSshKeySchema, deleteSshKeySchema, deleteUserFromServerSchema, isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
+import {
+	addSshKeySchema,
+	deleteSshKeySchema,
+	deleteUserFromServerSchema,
+	isActiveSchema,
+	userNameSchema
+} from '$lib/schema/schema.js';
 import simpleDb from '$lib/server/simpleDb.js';
 import { getPublicKeyComment, getPublicKeyFingerprint, isValidSshPublicKey } from '$lib/server/ssh.js';
 import type { Actions } from '@sveltejs/kit';

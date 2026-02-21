@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as Avatar from "$lib/components/shadcn/ui/avatar/index.js";
-	import * as DropdownMenu from "$lib/components/shadcn/ui/dropdown-menu/index.js";
-	import * as Sidebar from "$lib/components/shadcn/ui/sidebar/index.js";
-	import { useSidebar } from "$lib/components/shadcn/ui/sidebar/index.js";
-	import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
-	import LogOutIcon from "@lucide/svelte/icons/log-out";
+	import * as Avatar from '$lib/components/shadcn/ui/avatar/index.js';
+	import * as DropdownMenu from '$lib/components/shadcn/ui/dropdown-menu/index.js';
+	import * as Sidebar from '$lib/components/shadcn/ui/sidebar/index.js';
+	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
+	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
+	import LogOutIcon from '@lucide/svelte/icons/log-out';
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
 	const sidebar = useSidebar();
@@ -34,7 +34,7 @@
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
 				class="w-(--bits-dropdown-menu-anchor-width) min-w-56 rounded-lg"
-				side={sidebar.isMobile ? "bottom" : "right"}
+				side={sidebar.isMobile ? 'bottom' : 'right'}
 				align="end"
 				sideOffset={4}
 			>

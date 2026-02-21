@@ -8,25 +8,25 @@
 		user: {
 			name: 'Admin',
 			email: '',
-			avatar: '',
+			avatar: ''
 		},
 		navMain: [
 			{
 				title: 'Dashboard',
 				url: '/dashboard',
-				icon: HouseIcon,
+				icon: HouseIcon
 			},
 			{
 				title: 'Users',
 				url: '/users',
-				icon: UsersRoundIcon,
+				icon: UsersRoundIcon
 			},
 			{
 				title: 'Settings',
 				url: '/settings',
-				icon: Settings2Icon,
-			},
-		],
+				icon: Settings2Icon
+			}
+		]
 	};
 </script>
 
@@ -36,11 +36,7 @@
 	import * as Sidebar from '$lib/components/shadcn/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
 
-	let {
-		ref = $bindable(null),
-		collapsible = 'icon',
-		...restProps
-	}: ComponentProps<typeof Sidebar.Root> = $props();
+	let { ref = $bindable(null), collapsible = 'icon', ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>

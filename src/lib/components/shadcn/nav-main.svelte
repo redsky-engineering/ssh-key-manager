@@ -5,7 +5,7 @@
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 
 	let {
-		items,
+		items
 	}: {
 		items: {
 			title: string;

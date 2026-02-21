@@ -181,7 +181,10 @@
 			</Card.Header>
 			<Card.Footer class="flex justify-between">
 				<div class="flex gap-2"><Key /> {user.sshKeyData.length}</div>
-				<div class="flex gap-2"><Server /> {data.servers.filter((s) => s.userIds.includes(user.id)).length}</div>
+				<div class="flex gap-2">
+					<Server />
+					{data.servers.filter((s) => s.userIds.includes(user.id)).length}
+				</div>
 			</Card.Footer>
 		</Card.Root>
 	</button>
@@ -221,7 +224,12 @@
 				<div class="rounded-lg border p-4">
 					<form action="?/active" use:isActiveFormEnhance method="POST">
 						<div class="flex items-center gap-3">
-							<Switch id="isActive" type="submit" name="isActive" bind:checked={$isActiveFormData.isActive} />
+							<Switch
+								id="isActive"
+								type="submit"
+								name="isActive"
+								bind:checked={$isActiveFormData.isActive}
+							/>
 							<Label for="isActive" class="cursor-pointer font-medium">
 								{selectedUser!.isActive ? 'Active' : 'Inactive'}
 							</Label>
@@ -306,13 +314,7 @@
 	</Sheet.Content>
 </Sheet.Root>
 
-<form
-	bind:this={deleteFormEl}
-	action="?/delete-ssh-key"
-	method="POST"
-	use:deleteSshKeyFormEnhance
-	class="hidden"
->
+<form bind:this={deleteFormEl} action="?/delete-ssh-key" method="POST" use:deleteSshKeyFormEnhance class="hidden">
 	<input type="hidden" name="userId" value={selectedUser?.id} />
 	<input type="hidden" name="fingerprint" value={pendingDeleteFingerprint} />
 </form>

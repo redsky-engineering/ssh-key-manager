@@ -94,11 +94,11 @@ class SimpleDb {
 
 	async updateServer(serverId: number, updatedServerData: Partial<ServerData>): Promise<boolean> {
 		const serverIndex = this.servers.findIndex((server) => server.id === serverId);
-		
+
 		if (serverIndex === -1) {
 			return false;
 		}
-		
+
 		this.servers[serverIndex] = { ...this.servers[serverIndex], ...updatedServerData };
 		await this.writeData('servers', this.servers);
 		return true;
@@ -107,10 +107,7 @@ class SimpleDb {
 	async writeData(fileName: string, data: object) {
 		try {
 			console.log(typeof data);
-			await fs.writeFile(
-				path.join(STORAGE_PATH, `${fileName}.json`),
-				JSON.stringify(data, null, 2)
-			);
+			await fs.writeFile(path.join(STORAGE_PATH, `${fileName}.json`), JSON.stringify(data, null, 2));
 		} catch (error) {
 			console.error(`Error writing ${fileName} data: `, error);
 		}
