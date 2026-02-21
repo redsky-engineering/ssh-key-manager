@@ -1,19 +1,19 @@
 <script lang="ts">
-	import AppBarMobileMenu from '$lib/ui/appBarMobileMenu/AppBarMobileMenu.svelte';
-	import { Badge } from '$lib/ui/badge/index.js';
-	import { Label } from '$lib/ui/label/index.js';
-	import * as Sheet from '$lib/ui/sheet/index.js';
-	import { Switch } from '$lib/ui/switch/index.js';
+	import { Badge } from '$lib/components/shadcn/ui/badge/index.js';
+	import { Label } from '$lib/components/shadcn/ui/label/index.js';
+	import * as Sheet from '$lib/components/shadcn/ui/sheet/index.js';
+	import { Switch } from '$lib/components/shadcn/ui/switch/index.js';
+	import AppBarMobileMenu from '$lib/custom/appBarMobileMenu/AppBarMobileMenu.svelte';
 
+	import * as Card from '$lib/components/shadcn/ui/card/index.js';
+	import AddSshKeyPopup from '$lib/custom/dialogs/AddSshKeyDialog.svelte';
+	import EditUserNamePopup from '$lib/custom/dialogs/EditUserNameDialog.svelte';
 	import { addSshKeySchema, isActiveSchema, userNameSchema } from '$lib/schema/schema.js';
 	import type { UserData } from '$lib/server/simpleDb.js';
-	import * as Card from '$lib/ui/card/index.js';
-	import AddSshKeyPopup from '$lib/ui/popups/AddSshKeyPopup.svelte';
-	import EditUserNamePopup from '$lib/ui/popups/EditUserNamePopup.svelte';
-	import { CirclePlus, Key, Pencil, Server, Shield, Trash2 } from 'lucide-svelte';
+	import { CirclePlus, Key, Pencil, Server, Shield, Trash2 } from '@lucide/svelte/icons';
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
@@ -32,8 +32,9 @@
 			});
 	});
 
+	// svelte-ignore state_referenced_locally
 	const userNameForm = superForm(data.userNameForm, {
-		validators: zod(userNameSchema),
+		validators: zod4(userNameSchema),
 		onUpdated: ({ form }) => {
 			if (!form.valid) return;
 			isEditUserNamePopupOpen = false;
@@ -43,8 +44,9 @@
 	});
 	const { form: userNameFormData } = userNameForm;
 
+	// svelte-ignore state_referenced_locally
 	const addSshKeyForm = superForm(data.addSshKeyForm, {
-		validators: zod(addSshKeySchema),
+		validators: zod4(addSshKeySchema),
 		onUpdated: ({ form }) => {
 			if (!form.valid) {
 				if (form.message) toast.error(form.message);
@@ -57,8 +59,9 @@
 	});
 	const { form: addSshKeyFormData } = addSshKeyForm;
 
+	// svelte-ignore state_referenced_locally
 	const isActiveForm = superForm(data.isActiveForm, {
-		validators: zod(isActiveSchema),
+		validators: zod4(isActiveSchema),
 		onUpdated: ({ form }) => {
 			if (!form.valid) return;
 			selectedUser!.isActive = form.data.isActive;
@@ -67,6 +70,7 @@
 	});
 	const { form: isActiveFormData, enhance: isActiveFormEnhance } = isActiveForm;
 
+	// svelte-ignore state_referenced_locally
 	const deleteSshKeyForm = superForm(data.deleteSshKeyForm, {
 		onSubmit: async (data) => {
 			console.log(data);
@@ -142,7 +146,7 @@
 				<div class="flex items-baseline gap-2">
 					{selectedUser!.name}
 					<button onclick={() => (isEditUserNamePopupOpen = true)}>
-						<Pencil size={16} class="cursor-pointer hover:text-muted-foreground" />
+						<Pencil size={16} class="hover:text-muted-foreground cursor-pointer" />
 					</button>
 				</div>
 			</Sheet.Title>
@@ -150,13 +154,7 @@
 		{#if !selectedUser!.isSystemAdmin}
 			<form action="?/active" use:isActiveFormEnhance method="POST">
 				<div class="mt-4 flex items-center gap-2">
-					<Switch
-						id="isActive"
-						type="submit"
-						includeInput
-						name="isActive"
-						bind:checked={$isActiveFormData.isActive}
-					/>
+					<Switch id="isActive" type="submit" name="isActive" bind:checked={$isActiveFormData.isActive} />
 					<Label for="isActive" class="cursor-pointer">
 						{selectedUser!.isActive ? 'Active' : 'Inactive'}
 					</Label>
@@ -167,7 +165,7 @@
 		<div class="flex items-center justify-between">
 			<h3 class="my-4">SSH Keys</h3>
 			<button onclick={() => (isAddSshKeyPopupOpen = true)}>
-				<CirclePlus class="cursor-pointer hover:text-muted-foreground" />
+				<CirclePlus class="hover:text-muted-foreground cursor-pointer" />
 			</button>
 		</div>
 		<div class="flex flex-col gap-4">
@@ -183,7 +181,7 @@
 						<button type="submit">
 							<Trash2
 								size={24}
-								class="absolute right-2 top-2 p-1 text-destructive hover:rounded-full hover:bg-slate-100"
+								class="text-destructive absolute top-2 right-2 p-1 hover:rounded-full hover:bg-slate-100"
 							/>
 						</button>
 					</form>

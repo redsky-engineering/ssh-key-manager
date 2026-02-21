@@ -3,12 +3,12 @@ import simpleDb from '$lib/server/simpleDb.js';
 import { getPublicKeyComment, getPublicKeyFingerprint, isValidSshPublicKey } from '$lib/server/ssh.js';
 import type { Actions } from '@sveltejs/kit';
 import { fail, message, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import type { PageServerLoad } from './$types.js';
 
 export const actions: Actions = {
 	username: async ({ request }) => {
-		const form = await superValidate(request, zod(userNameSchema));
+		const form = await superValidate(request, zod4(userNameSchema));
 
 		if (!form.valid) return fail(400, { form });
 		console.log('form.data', form.data);
@@ -21,7 +21,7 @@ export const actions: Actions = {
 		return { form };
 	},
 	active: async ({ request }) => {
-		const form = await superValidate(request, zod(isActiveSchema));
+		const form = await superValidate(request, zod4(isActiveSchema));
 
 		if (!form.valid) return fail(400, { form });
 		console.log('form.data', form.data);
@@ -34,7 +34,7 @@ export const actions: Actions = {
 		return { form };
 	},
 	'add-ssh-key': async ({ request }) => {
-		const form = await superValidate(request, zod(addSshKeySchema));
+		const form = await superValidate(request, zod4(addSshKeySchema));
 
 		if (!form.valid) return fail(400, { form });
 		console.log('form.data', form.data);
@@ -60,7 +60,7 @@ export const actions: Actions = {
 		return { form };
 	},
 	'delete-ssh-key': async ({ request }) => {
-		const form = await superValidate(request, zod(deleteSshKeySchema));
+		const form = await superValidate(request, zod4(deleteSshKeySchema));
 		console.log('form', form);
 
 		if (!form.valid) return fail(400, { form });
@@ -82,10 +82,10 @@ export const actions: Actions = {
 };
 
 export const load: PageServerLoad = async () => {
-	const userNameForm = await superValidate(zod(userNameSchema));
-	const isActiveForm = await superValidate(zod(isActiveSchema));
-	const addSshKeyForm = await superValidate(zod(addSshKeySchema));
-	const deleteSshKeyForm = await superValidate(zod(deleteSshKeySchema));
+	const userNameForm = await superValidate(zod4(userNameSchema));
+	const isActiveForm = await superValidate(zod4(isActiveSchema));
+	const addSshKeyForm = await superValidate(zod4(addSshKeySchema));
+	const deleteSshKeyForm = await superValidate(zod4(deleteSshKeySchema));
 
 	return { userNameForm, isActiveForm, addSshKeyForm, deleteSshKeyForm };
 };

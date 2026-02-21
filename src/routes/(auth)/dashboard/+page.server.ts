@@ -2,12 +2,12 @@ import type { Actions } from '@sveltejs/kit';
 import simpleDb from '$lib/server/simpleDb.js';
 import type { PageServerLoad } from './$types';
 import { fail, message, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { addUsersToServerSchema, deleteUserFromServerSchema } from '$lib/schema/schema';
 
 export const actions: Actions = {
 	'add-users-to-server': async ({ request }) => {
-		const form = await superValidate(request, zod(addUsersToServerSchema));
+		const form = await superValidate(request, zod4(addUsersToServerSchema));
 
 		if (!form.valid) return fail(400, { form });
 
@@ -22,7 +22,7 @@ export const actions: Actions = {
 		return { form };
 	},
 	'delete-user-from-server': async ({ request }) => {
-		const form = await superValidate(request, zod(deleteUserFromServerSchema));
+		const form = await superValidate(request, zod4(deleteUserFromServerSchema));
 
 		if (!form.valid) return fail(400, { form });
 
@@ -40,8 +40,8 @@ export const actions: Actions = {
 };
 
 export const load: PageServerLoad = async () => {
-	const addUsersToServerForm = await superValidate(zod(addUsersToServerSchema));
-	const deleteUserFromServerForm = await superValidate(zod(deleteUserFromServerSchema));
+	const addUsersToServerForm = await superValidate(zod4(addUsersToServerSchema));
+	const deleteUserFromServerForm = await superValidate(zod4(deleteUserFromServerSchema));
 
 	return { addUsersToServerForm, deleteUserFromServerForm };
 };

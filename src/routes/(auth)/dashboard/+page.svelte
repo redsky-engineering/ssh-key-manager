@@ -1,22 +1,22 @@
 <script lang="ts">
-	import File from 'lucide-svelte/icons/file';
+	import File from '@lucide/svelte/icons/file';
 
 	import AppUtils from '$lib/AppUtils.js';
+	import { Badge } from '$lib/components/shadcn/ui/badge/index.js';
+	import { Button } from '$lib/components/shadcn/ui/button/index.js';
+	import * as Card from '$lib/components/shadcn/ui/card/index.js';
+	import { Progress } from '$lib/components/shadcn/ui/progress/index.js';
+	import * as Table from '$lib/components/shadcn/ui/table/index.js';
+	import * as Tabs from '$lib/components/shadcn/ui/tabs/index.js';
+	import AppBarMobileMenu from '$lib/custom/appBarMobileMenu/AppBarMobileMenu.svelte';
+	import ServerInfoCard from '$lib/custom/serverInfoCard/ServerInfoCard.svelte';
 	import type { ServerData } from '$lib/server/simpleDb.js';
-	import AppBarMobileMenu from '$lib/ui/appBarMobileMenu/AppBarMobileMenu.svelte';
-	import { Badge } from '$lib/ui/badge/index.js';
-	import { Button } from '$lib/ui/button/index.js';
-	import * as Card from '$lib/ui/card/index.js';
-	import { Progress } from '$lib/ui/progress/index.js';
-	import ServerInfoCard from '$lib/ui/serverInfoCard/ServerInfoCard.svelte';
-	import * as Table from '$lib/ui/table/index.js';
-	import * as Tabs from '$lib/ui/tabs/index.js';
 	import { cn } from '$lib/utils.js';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
 
-	let selectedServerId: number | null = $state(data.servers.length > 0 ? data.servers[0].id : null);
+	let selectedServerId: number | null = $derived(data.servers.length > 0 ? data.servers[0].id : null);
 	let searchValue = $state('');
 
 	let filteredServers = $derived.by(() => {
@@ -56,7 +56,7 @@
 						<Card.Title class="text-4xl text-green-300">{activeServers.length}</Card.Title>
 					</Card.Header>
 					<Card.Content>
-						<div class="text-xs text-muted-foreground">1 new from last week</div>
+						<div class="text-muted-foreground text-xs">1 new from last week</div>
 					</Card.Content>
 					<Card.Footer>
 						<Progress value={50} aria-label="1 new active server" />
@@ -68,7 +68,7 @@
 						<Card.Title class="text-3xl text-red-300">4</Card.Title>
 					</Card.Header>
 					<Card.Content>
-						<div class="text-xs text-muted-foreground">2 new from last week</div>
+						<div class="text-muted-foreground text-xs">2 new from last week</div>
 					</Card.Content>
 					<Card.Footer>
 						<Progress value={50} aria-label="2 new stale servers" />
@@ -80,7 +80,7 @@
 						<Card.Title class="text-3xl">{usersWithAccessCount}</Card.Title>
 					</Card.Header>
 					<Card.Content>
-						<div class="text-xs text-muted-foreground">{data.users.length} total users</div>
+						<div class="text-muted-foreground text-xs">{data.users.length} total users</div>
 					</Card.Content>
 				</Card.Root>
 			</div>

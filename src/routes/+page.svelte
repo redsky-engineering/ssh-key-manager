@@ -1,14 +1,15 @@
 <script lang="ts">
-	import { Button } from '$lib/ui/button/index.js';
-	import * as Card from '$lib/ui/card/index.js';
-	import { Input } from '$lib/ui/input/index.js';
-	import { Label } from '$lib/ui/label/index.js';
+	import { Button } from '$lib/components/shadcn/ui/button/index.js';
+	import * as Card from '$lib/components/shadcn/ui/card/index.js';
+	import { Input } from '$lib/components/shadcn/ui/input/index.js';
+	import { Label } from '$lib/components/shadcn/ui/label/index.js';
 
 	import { superForm } from 'sveltekit-superforms';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
 
+	// svelte-ignore state_referenced_locally
 	const { form, errors, constraints, message, enhance } = superForm(data.form);
 </script>
 
