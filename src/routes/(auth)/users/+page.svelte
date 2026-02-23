@@ -33,8 +33,8 @@
 	let isSetInactiveConfirmOpen = $state(false);
 	let isActiveFormEl: HTMLFormElement | undefined = $state();
 	let selectedUser: UserData | null = $state(null);
-	let deleteFormEl: HTMLFormElement;
-	let removeFromServerFormEl: HTMLFormElement;
+	let deleteFormEl: HTMLFormElement | undefined = $state();
+	let removeFromServerFormEl: HTMLFormElement | undefined = $state();
 
 	let filteredUsers = $derived.by(() => {
 		return data.users
@@ -94,9 +94,6 @@
 
 	// svelte-ignore state_referenced_locally
 	const deleteSshKeyForm = superForm(data.deleteSshKeyForm, {
-		onSubmit: async (data) => {
-			console.log(data);
-		},
 		onUpdated: ({ form }) => {
 			if (!form.valid) {
 				if (form.message) toast.error(form.message);
@@ -117,7 +114,7 @@
 				if (form.message) toast.error(form.message);
 				return;
 			}
-			const server = data.servers.find((s) => s.id === form.data.serverId);
+			const server = data.servers.find((server) => server.id === form.data.serverId);
 			if (server) {
 				server.userIds = server.userIds.filter((id) => id !== form.data.userId);
 			}
@@ -135,7 +132,7 @@
 		$addSshKeyFormData = { sshKey: '', userId: selectedUser?.id || 0 };
 	});
 
-	function handleClickUserCard(user: UserData) {
+	function handleUserCardClick(user: UserData) {
 		isSheetOpen = true;
 		selectedUser = user;
 	}
@@ -146,7 +143,7 @@
 	}
 
 	function onConfirmDeleteSshKey() {
-		deleteFormEl.requestSubmit();
+		deleteFormEl?.requestSubmit();
 		isDeleteSshKeyConfirmOpen = false;
 		pendingDeleteFingerprint = null;
 	}
@@ -162,7 +159,7 @@
 	}
 
 	function onConfirmRemoveFromServer() {
-		removeFromServerFormEl.requestSubmit();
+		removeFromServerFormEl?.requestSubmit();
 		isRemoveFromServerConfirmOpen = false;
 		pendingRemoveServerId = null;
 	}
@@ -192,7 +189,7 @@
 </script>
 
 {#snippet userCard(user: UserData)}
-	<button onclick={() => handleClickUserCard(user)} class="text-left" aria-label="Select User">
+	<button onclick={() => handleUserCardClick(user)} class="text-left" aria-label="Select User">
 		<Card.Root class="flex h-full cursor-pointer flex-col justify-between">
 			<Card.Header>
 				<Card.Title>

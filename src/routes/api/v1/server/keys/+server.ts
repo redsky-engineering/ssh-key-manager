@@ -53,7 +53,10 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
 	const keyEntries: ServerKeyEntry[] = userIds
 		.map((userId) => simpleDb.getUser(userId))
-		.filter((user): user is NonNullable<typeof user> => user !== undefined && user.isActive && user.sshKeyData.length > 0)
+		.filter(
+			(user): user is NonNullable<typeof user> =>
+				user !== undefined && user.isActive && user.sshKeyData.length > 0
+		)
 		.map((user) => ({
 			name: user.name,
 			publicKeys: user.sshKeyData.map((keyData) => keyData.publicKey)
