@@ -132,7 +132,7 @@
 		$addSshKeyFormData = { sshKey: '', userId: selectedUser?.id || 0 };
 	});
 
-	function onUserCardClick(user: UserData) {
+	function handleUserCardClick(user: UserData) {
 		isSheetOpen = true;
 		selectedUser = user;
 	}
@@ -189,7 +189,7 @@
 </script>
 
 {#snippet userCard(user: UserData)}
-	<button onclick={() => onUserCardClick(user)} class="text-left" aria-label="Select User">
+	<button onclick={() => handleUserCardClick(user)} class="text-left" aria-label="Select User">
 		<Card.Root class="flex h-full cursor-pointer flex-col justify-between">
 			<Card.Header>
 				<Card.Title>

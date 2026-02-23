@@ -96,7 +96,7 @@
 
 	let forms: HTMLFormElement[] = $state([]);
 
-	function onDelete(form: HTMLFormElement) {
+	function handleDelete(form: HTMLFormElement) {
 		if (form) {
 			form.requestSubmit();
 		}
@@ -201,7 +201,7 @@
 													<Button variant="outline">Cancel</Button>
 												</Popover.Close>
 												<Popover.Close>
-													<Button onclick={() => onDelete(forms[user.id])}>Delete</Button>
+													<Button onclick={() => handleDelete(forms[user.id])}>Delete</Button>
 												</Popover.Close>
 											</div>
 										</div>

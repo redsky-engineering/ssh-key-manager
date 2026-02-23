@@ -95,10 +95,14 @@ let userMap; // just use 'users' or 'userById'
 ## Functions
 
 ```typescript
-// ✓ CORRECT - Event handlers
+// ✓ CORRECT - Prop callbacks (passed to child components as props)
 function onSubmit() { ... }
 function onCancel() { ... }
 function onClick() { ... }
+
+// ✓ CORRECT - Internal event handlers (NOT exposed as props)
+function handleDelete() { ... }
+function handleUserCardClick() { ... }
 
 // ✓ CORRECT - Functions returning booleans use same prefixes
 function isValidEmail(email: string): boolean { ... }
@@ -110,9 +114,12 @@ async function fetchUsers() { ... }
 
 // ✗ WRONG
 const onSubmit = () => { ... } // use function declaration
-function handleOnSubmit() { ... } // don't use "handle" prefix
-function handleSubmit() { ... } // don't use "handle" prefix
+function handleOnSubmit() { ... } // don't use "handle" prefix on prop callbacks
 ```
+
+**The key distinction:**
+- Use `on*` for functions that are **passed as props** to a component (`onConfirm`, `onCancel`, `onNextServer`)
+- Use `handle*` for functions that are **internal** to a component and not exposed as props (`handleDelete`, `handleUserCardClick`)
 
 ---
 
@@ -456,16 +463,20 @@ let isActive = true;
 let isDisabled = false;
 ```
 
-### ❌ Don't Use "handle" Prefix for Event Handlers
+### ✅ Use "handle" for Internal Handlers, "on" for Prop Callbacks
 
 ```typescript
-// ✗ WRONG
-function handleSubmit() { ... }
-function handleClick() { ... }
+// ✗ WRONG - using "handle" prefix on a prop callback
+function handleSubmit() { ... }  // if this is passed as a prop to a child
+function handleConfirm() { ... } // if this is passed as onConfirm={handleConfirm}
 
-// ✓ CORRECT
+// ✓ CORRECT - prop callbacks use "on" prefix
 function onSubmit() { ... }
-function onClick() { ... }
+function onConfirm() { ... }
+
+// ✓ CORRECT - internal handlers use "handle" prefix
+function handleDelete() { ... }     // wires up internal DOM event, not a prop
+function handleUserCardClick() { ... } // internal click logic, not a prop
 ```
 
 ---

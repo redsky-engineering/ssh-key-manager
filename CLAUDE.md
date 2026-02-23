@@ -199,7 +199,8 @@ let access = true;
 - **UPPERCASE_SNAKE_CASE**: global constants only
 - **Boolean prefix**: `is`, `has`, `can`, `should`, `are`
 - **Arrays**: plural naming (`users` not `userList`)
-- **Event handlers**: `onSubmit`, `onClick` (not `handleSubmit`)
+- **Prop callbacks**: `onSubmit`, `onClick` — use `on*` only when the function is passed as a prop to a child component
+- **Internal handlers**: `handleDelete`, `handleUserCardClick` — use `handle*` for functions internal to a component that are NOT exposed as props
 
 ### Component Structure Order
 
@@ -238,7 +239,8 @@ src/lib/services/
 ❌ Generic prop interface names (`Props` instead of `UserCardProps`)  
 ❌ Putting business logic in dialogs instead of parent components  
 ❌ Using single-letter variable names or callback parameters (e.g. `.filter((s) => ...)` — use `.filter((server) => ...)`)
-❌ Event handlers with "handle" prefix (`handleClick` vs `onClick`)  
+❌ Using `handle*` prefix on prop callbacks (`handleConfirm` passed as `onConfirm={handleConfirm}` — just name it `onConfirm`)
+❌ Using `on*` prefix on internal handlers that are not props (`onDelete` for an internal fn — use `handleDelete`)
 ❌ Type annotations with generic notation (`$state<Type>()`)
 
 ---
