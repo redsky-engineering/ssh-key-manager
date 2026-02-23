@@ -104,6 +104,17 @@ class SimpleDb {
 		return true;
 	}
 
+	async addServer(newServerData: Omit<ServerData, 'id'>): Promise<ServerData> {
+		const maxId = this.servers.reduce(
+			(max, server) => (server.id > max ? server.id : max),
+			0
+		);
+		const server: ServerData = { id: maxId + 1, ...newServerData };
+		this.servers.push(server);
+		await this.writeData('servers', this.servers);
+		return server;
+	}
+
 	async writeData(fileName: string, data: object) {
 		try {
 			console.log(typeof data);

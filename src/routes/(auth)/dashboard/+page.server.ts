@@ -1,9 +1,9 @@
-import type { Actions } from '@sveltejs/kit';
+import { addUsersToServerSchema, deleteUserFromServerSchema } from '$lib/schema/schema';
 import simpleDb from '$lib/server/simpleDb.js';
-import type { PageServerLoad } from './$types';
+import type { Actions } from '@sveltejs/kit';
 import { fail, message, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { addUsersToServerSchema, deleteUserFromServerSchema } from '$lib/schema/schema';
+import type { PageServerLoad } from './$types';
 
 export const actions: Actions = {
 	'add-users-to-server': async ({ request }) => {
@@ -30,6 +30,9 @@ export const actions: Actions = {
 
 		const user = simpleDb.getUser(form.data.userId);
 		if (!user) return message(form, 'User not found', { status: 404 });
+
+		if (user.isSystemAdmin)
+			return message(form, 'You cannot delete a system admin', { status: 400 });
 
 		const server = simpleDb.getServer(form.data.serverId);
 		if (!server) return message(form, 'Server not found', { status: 404 });

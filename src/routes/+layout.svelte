@@ -7,6 +7,6 @@
 	let { children }: { children: Snippet } = $props();
 </script>
 
-<Toaster richColors />
+<Toaster richColors position="top-center" />
 <ModeWatcher />
 {@render children()}

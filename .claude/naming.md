@@ -423,16 +423,25 @@ let userName = 'john';
 const MAX_USERS = 100;
 ```
 
-### ❌ Don't Use Single-Letter Variables
+### ❌ Don't Use Single-Letter Variables or Parameters
+
+This applies to all identifiers: variables, function parameters, and callback parameters in `.filter()`, `.map()`, `.forEach()`, etc. The only exception is loop indices (`i`, `j`, `k`) in `for` loops.
 
 ```typescript
 // ✗ WRONG
 let u = getUser();
 let x = 10;
+users.filter((u) => u.isActive);
+servers.map((s) => s.name);
 
 // ✓ CORRECT
 let user = getUser();
 let userCount = 10;
+users.filter((user) => user.isActive);
+servers.map((server) => server.name);
+
+// ✓ CORRECT - Loop indices are the only exception
+for (let i = 0; i < users.length; i++) { ... }
 ```
 
 ### ❌ Don't Use Generic Names for Booleans

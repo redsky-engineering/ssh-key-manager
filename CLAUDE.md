@@ -170,7 +170,7 @@ let user = await fetch('/api/user/me');
 
 ### 4. Clean Code Principles
 
-- Meaningful variable names (NO single letters)
+- Meaningful variable names (NO single letters for variables, parameters, or callback params — only `i`/`j`/`k` in `for` loops)
 - Small, focused functions
 - Self-documenting code (comments only for complex logic)
 - camelCase for variables/functions, PascalCase for types/components
@@ -237,7 +237,7 @@ src/lib/services/
 ❌ Calling API directly from components instead of services  
 ❌ Generic prop interface names (`Props` instead of `UserCardProps`)  
 ❌ Putting business logic in dialogs instead of parent components  
-❌ Using single-letter variable names  
+❌ Using single-letter variable names or callback parameters (e.g. `.filter((s) => ...)` — use `.filter((server) => ...)`)
 ❌ Event handlers with "handle" prefix (`handleClick` vs `onClick`)  
 ❌ Type annotations with generic notation (`$state<Type>()`)
 
@@ -267,6 +267,18 @@ If context files conflict or you're unclear on a pattern:
 3. Ask for clarification before generating code
 
 Better to ask than to generate code that needs refactoring.
+
+---
+
+## PostToolUse Hook Behavior
+
+A validation hook runs after every file edit (`npm run check && npm run lint`).
+
+- If you see "PostToolUse:Edit hook error" — the check FAILED.
+- You MUST read the error output and fix every reported error immediately.
+- Do NOT proceed to other files or report task completion while hook errors exist.
+- If the hook error output is unclear, run `npm run check` manually to see full details.
+- This is non-negotiable. Every edit must result in a passing hook before moving on.
 
 ---
 

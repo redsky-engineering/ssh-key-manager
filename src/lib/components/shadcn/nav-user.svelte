@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Avatar from '$lib/components/shadcn/ui/avatar/index.js';
+	import { enhance } from '$app/forms';
 	import * as DropdownMenu from '$lib/components/shadcn/ui/dropdown-menu/index.js';
 	import * as Sidebar from '$lib/components/shadcn/ui/sidebar/index.js';
 	import { useSidebar } from '$lib/components/shadcn/ui/sidebar/index.js';
@@ -8,6 +8,12 @@
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
 	const sidebar = useSidebar();
+
+	let logoutForm: HTMLFormElement = $state(null!);
+
+	function onLogout() {
+		logoutForm.requestSubmit();
+	}
 </script>
 
 <Sidebar.Menu>
@@ -17,13 +23,9 @@
 				{#snippet child({ props })}
 					<Sidebar.MenuButton
 						size="lg"
-						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
 						{...props}
 					>
-						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
-						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
 							<span class="truncate text-xs">{user.email}</span>
@@ -40,10 +42,6 @@
 			>
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
-						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
 							<span class="truncate font-medium">{user.name}</span>
 							<span class="truncate text-xs">{user.email}</span>
@@ -51,7 +49,7 @@
 					</div>
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item onclick={onLogout} class="cursor-pointer">
 					<LogOutIcon />
 					Log out
 				</DropdownMenu.Item>
@@ -59,3 +57,5 @@
 		</DropdownMenu.Root>
 	</Sidebar.MenuItem>
 </Sidebar.Menu>
+
+<form bind:this={logoutForm} method="POST" action="/logout" use:enhance hidden></form>

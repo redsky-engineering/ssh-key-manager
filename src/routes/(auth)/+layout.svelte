@@ -2,8 +2,12 @@
 	import { page } from '$app/stores';
 	import AppSidebar from '$lib/components/shadcn/app-sidebar.svelte';
 	import * as Breadcrumb from '$lib/components/shadcn/ui/breadcrumb/index.js';
+	import { Button } from '$lib/components/shadcn/ui/button/index.js';
 	import { Separator } from '$lib/components/shadcn/ui/separator/index.js';
 	import * as Sidebar from '$lib/components/shadcn/ui/sidebar/index.js';
+	import MoonIcon from '@lucide/svelte/icons/moon';
+	import SunIcon from '@lucide/svelte/icons/sun';
+	import { mode, toggleMode } from 'mode-watcher';
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
@@ -25,7 +29,7 @@
 		<header
 			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
 		>
-			<div class="flex items-center gap-2 px-4">
+			<div class="flex flex-1 items-center gap-2 px-4">
 				<Sidebar.Trigger class="-ms-1" />
 				<Separator orientation="vertical" class="me-2 data-[orientation=vertical]:h-4" />
 				<Breadcrumb.Root>
@@ -35,6 +39,15 @@
 						</Breadcrumb.Item>
 					</Breadcrumb.List>
 				</Breadcrumb.Root>
+				<div class="ms-auto">
+					<Button variant="ghost" size="icon" onclick={toggleMode} aria-label="Toggle theme">
+						{#if mode.current === 'dark'}
+							<SunIcon />
+						{:else}
+							<MoonIcon />
+						{/if}
+					</Button>
+				</div>
 			</div>
 		</header>
 		{@render children()}

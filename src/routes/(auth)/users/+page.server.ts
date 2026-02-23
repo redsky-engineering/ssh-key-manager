@@ -34,12 +34,21 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod4(isActiveSchema));
 
 		if (!form.valid) return fail(400, { form });
-		console.log('form.data', form.data);
 
 		const user = simpleDb.getUser(form.data.userId);
 		if (!user) return message(form, 'User not found', { status: 404 });
 
-		simpleDb.updateUser(form.data.userId, { isActive: form.data.isActive });
+		await simpleDb.updateUser(form.data.userId, { isActive: form.data.isActive });
+
+		if (!form.data.isActive) {
+			for (const server of simpleDb.servers) {
+				if (server.userIds.includes(form.data.userId)) {
+					await simpleDb.updateServer(server.id, {
+						userIds: server.userIds.filter((id) => id !== form.data.userId)
+					});
+				}
+			}
+		}
 
 		return { form };
 	},

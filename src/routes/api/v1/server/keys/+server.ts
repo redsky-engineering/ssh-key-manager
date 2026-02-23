@@ -1,20 +1,65 @@
-import { sseClients } from '$lib/server/sseClients.js';
+import simpleDb from '$lib/server/simpleDb.js';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = ({ url }) => {
-	const min = Number(url.searchParams.get('min') ?? '0');
-	const max = Number(url.searchParams.get('max') ?? '1');
-	const d = max - min;
-	if (isNaN(d) || d < 0) {
-		error(400, 'min and max must be numbers, and min must be less than max');
+interface ServerKeyEntry {
+	name: string;
+	publicKeys: string[];
+}
+
+export const GET: RequestHandler = async ({ url, getClientAddress }) => {
+	const hostname = url.searchParams.get('hostname');
+
+	if (!hostname) {
+		error(400, 'hostname query parameter is required');
 	}
-	const random = min + Math.random() * d;
 
-	sseClients.forEach((callback, clientId) => {
-		console.log('Sending random number to client', clientId);
-		callback('message', String(random));
+	const clientIpAddress = getClientAddress();
+	const cpuUsagePercent = Number(url.searchParams.get('cpuUsagePercent') ?? '0');
+	const memoryUsagePercent = Number(url.searchParams.get('memoryUsagePercent') ?? '0');
+	const diskUsagePercent = Number(url.searchParams.get('diskUsagePercent') ?? '0');
+
+	const existingServer = simpleDb.servers.find((server) => server.name === hostname);
+
+	let userIds: number[];
+
+	if (!existingServer) {
+		const defaultUserIds = simpleDb.users
+			.filter((user) => user.isSystemAdmin && user.isActive)
+			.map((user) => user.id);
+
+		await simpleDb.addServer({
+			name: hostname,
+			ipAddress: clientIpAddress,
+			lastHeartbeatOn: new Date().toISOString(),
+			cpuUsagePercent,
+			memoryUsagePercent,
+			diskUsagePercent,
+			userIds: defaultUserIds
+		});
+
+		userIds = defaultUserIds;
+	} else {
+		await simpleDb.updateServer(existingServer.id, {
+			lastHeartbeatOn: new Date().toISOString(),
+			ipAddress: clientIpAddress,
+			cpuUsagePercent,
+			memoryUsagePercent,
+			diskUsagePercent
+		});
+
+		userIds = existingServer.userIds;
+	}
+
+	const keyEntries: ServerKeyEntry[] = userIds
+		.map((userId) => simpleDb.getUser(userId))
+		.filter((user): user is NonNullable<typeof user> => user !== undefined && user.isActive && user.sshKeyData.length > 0)
+		.map((user) => ({
+			name: user.name,
+			publicKeys: user.sshKeyData.map((keyData) => keyData.publicKey)
+		}));
+
+	return new Response(JSON.stringify({ data: keyEntries }), {
+		headers: { 'Content-Type': 'application/json' }
 	});
-
-	return new Response(String(random));
 };

@@ -13,13 +13,12 @@
 	import ServerInfoCard from '$lib/custom/serverInfoCard/ServerInfoCard.svelte';
 	import type { ServerData } from '$lib/server/simpleDb.js';
 	import { cn } from '$lib/utils.js';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
 
-	let selectedServerId: number | null = $derived(
-		data.servers.length > 0 ? data.servers[0].id : null
-	);
+	let selectedServerId: number | null = $state(null);
 	let searchValue = $state('');
 
 	let filteredServers = $derived.by(() => {
@@ -42,6 +41,10 @@
 		const staleTime = Date.now() - new Date(server.lastHeartbeatOn).getTime();
 		return staleTime < 3 * 60 * 1000;
 	}
+
+	onMount(() => {
+		selectedServerId = data.servers.length > 0 ? data.servers[0].id : null;
+	});
 </script>
 
 <div class="flex flex-col gap-4 p-4">

@@ -2,7 +2,6 @@
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Copy from '@lucide/svelte/icons/copy';
-	import EllipsisVertical from '@lucide/svelte/icons/ellipsis-vertical';
 	import Network from '@lucide/svelte/icons/network';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 
@@ -10,8 +9,6 @@
 	import { Button, buttonVariants } from '$lib/components/shadcn/ui/button/index.js';
 	import * as Card from '$lib/components/shadcn/ui/card/index.js';
 	import * as Dialog from '$lib/components/shadcn/ui/dialog/index.js';
-	import * as DropdownMenu from '$lib/components/shadcn/ui/dropdown-menu/index.js';
-	import * as Pagination from '$lib/components/shadcn/ui/pagination/index.js';
 	import * as Select from '$lib/components/shadcn/ui/select/index.js';
 	import { Separator } from '$lib/components/shadcn/ui/separator/index.js';
 	import { addUsersToServerSchema, deleteUserFromServerSchema } from '$lib/schema/schema';
@@ -43,7 +40,12 @@
 	let userIdsToAdd = $state<number[]>([]);
 
 	const usersAvailableToAdd = $derived(
-		users.filter((user) => !serverInfo.userIds.find((id) => id === user.id))
+		users.filter(
+			(user) =>
+				!serverInfo.userIds.find((id) => id === user.id) &&
+				user.isActive &&
+				user.sshKeyData.length > 0
+		)
 	);
 
 	// svelte-ignore state_referenced_locally
@@ -59,7 +61,12 @@
 			isAddToUsersDialogOpen = false;
 		}
 	});
-	const { enhance, form: addUsersToServerFormData, errors, constraints } = addUsersToServerForm;
+	const {
+		enhance: addUsersToServerFormEnhance,
+		form: addUsersToServerFormData,
+		errors,
+		constraints
+	} = addUsersToServerForm;
 
 	// svelte-ignore state_referenced_locally
 	const deleteUserFromServerForm = superForm(deleteUserFromServer, {
@@ -74,7 +81,7 @@
 	});
 	const { enhance: deleteUserFromServerFormEnhance } = deleteUserFromServerForm;
 
-	let forms: HTMLFormElement[] = [];
+	let forms: HTMLFormElement[] = $state([]);
 
 	const handleDelete = (form: HTMLFormElement) => {
 		if (form) {
@@ -88,8 +95,8 @@
 </script>
 
 <Card.Root class="overflow-hidden">
-	<Card.Header class="bg-muted/50 flex flex-row items-start">
-		<div class="grid gap-0.5">
+	<Card.Header class="bg-muted/50 flex flex-row items-start justify-between pt-5 pb-4">
+		<div class="grid gap-1">
 			<Card.Title class="group flex items-center gap-2 text-lg">
 				{serverInfo.name}
 				<Button
@@ -102,30 +109,36 @@
 					<span class="sr-only">Copy Server Name</span>
 				</Button>
 			</Card.Title>
-			<Card.Description>IP Address: {serverInfo.ipAddress}</Card.Description>
+			<div class="text-muted-foreground flex items-center gap-2 text-sm">
+				<span>IP: {serverInfo.ipAddress}</span>
+				<Button
+					size="sm"
+					variant="outline"
+					class="h-6 gap-1 px-2"
+					onclick={() => {
+						AppUtils.copyToClipboardWeb(serverInfo.ipAddress);
+						toast.success('IP address copied to clipboard');
+					}}
+				>
+					<Network class="h-3 w-3" />
+					<span class="text-xs">Copy IP</span>
+				</Button>
+			</div>
+			<div class="text-muted-foreground text-xs">
+				Updated <time dateTime={serverInfo.lastHeartbeatOn}>
+					{AppUtils.getRelativeTime(serverInfo.lastHeartbeatOn)}
+				</time>
+			</div>
 		</div>
-		<div class="ml-auto flex items-center gap-1">
-			<Button
-				size="sm"
-				variant="outline"
-				class="h-8 gap-1"
-				onclick={() => AppUtils.copyToClipboardWeb(serverInfo.ipAddress)}
-			>
-				<Network class="h-3.5 w-3.5" />
-				<span class="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">Copy IP</span>
+		<div class="flex items-center gap-1">
+			<Button size="icon" variant="outline" class="h-6 w-6" onclick={onPreviousServer}>
+				<ChevronLeft class="h-3.5 w-3.5" />
+				<span class="sr-only">Previous Server</span>
 			</Button>
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger class={buttonVariants({ variant: 'outline', size: 'icon' })}>
-					<EllipsisVertical class="h-3.5 w-3.5" />
-					<span class="sr-only">More</span>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end">
-					<DropdownMenu.Item>Edit</DropdownMenu.Item>
-					<DropdownMenu.Item>Export</DropdownMenu.Item>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Item>Trash</DropdownMenu.Item>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+			<Button size="icon" variant="outline" class="h-6 w-6" onclick={onNextServer}>
+				<ChevronRight class="h-3.5 w-3.5" />
+				<span class="sr-only">Next Server</span>
+			</Button>
 		</div>
 	</Card.Header>
 	<Card.Content class="p-6 text-sm">
@@ -175,9 +188,11 @@
 												<Popover.Close>
 													<Button variant="outline">Cancel</Button>
 												</Popover.Close>
-												<Popover.Close>
-													<Button onclick={() => handleDelete(forms[user!.id])}>Delete</Button>
-												</Popover.Close>
+												{#if !user!.isSystemAdmin}
+													<Popover.Close>
+														<Button onclick={() => handleDelete(forms[user!.id])}>Delete</Button>
+													</Popover.Close>
+												{/if}
 											</div>
 										</div>
 									</Popover.Content>
@@ -196,7 +211,12 @@
 						Add User
 					</Dialog.Trigger>
 					<Dialog.Content class="w-[90%] max-w-sm" interactOutsideBehavior="ignore">
-						<form method="POST" action="?/add-users-to-server" use:enhance class="grid gap-4">
+						<form
+							method="POST"
+							action="?/add-users-to-server"
+							use:addUsersToServerFormEnhance
+							class="grid gap-4"
+						>
 							<Dialog.Header>
 								<Dialog.Title class="mb-2">Who do you want to add?</Dialog.Title>
 								<Dialog.Description>
@@ -255,27 +275,4 @@
 			</ul>
 		</div>
 	</Card.Content>
-	<Card.Footer class="bg-muted/50 flex flex-row items-center border-t px-6 py-3">
-		<div class="text-muted-foreground text-xs">
-			Updated <time dateTime={serverInfo.lastHeartbeatOn}>
-				{AppUtils.getRelativeTime(serverInfo.lastHeartbeatOn)}
-			</time>
-		</div>
-		<Pagination.Root count={10} class="mr-0 ml-auto w-auto">
-			<Pagination.Content>
-				<Pagination.Item>
-					<Button size="icon" variant="outline" class="h-6 w-6" onclick={onPreviousServer}>
-						<ChevronLeft class="h-3.5 w-3.5" />
-						<span class="sr-only">Previous Server</span>
-					</Button>
-				</Pagination.Item>
-				<Pagination.Item>
-					<Button size="icon" variant="outline" class="h-6 w-6" onclick={onNextServer}>
-						<ChevronRight class="h-3.5 w-3.5" />
-						<span class="sr-only">Next Server</span>
-					</Button>
-				</Pagination.Item>
-			</Pagination.Content>
-		</Pagination.Root>
-	</Card.Footer>
 </Card.Root>

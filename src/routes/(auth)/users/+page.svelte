@@ -30,6 +30,8 @@
 	let pendingDeleteFingerprint: string | null = $state(null);
 	let isRemoveFromServerConfirmOpen = $state(false);
 	let pendingRemoveServerId: number | null = $state(null);
+	let isSetInactiveConfirmOpen = $state(false);
+	let isActiveFormEl: HTMLFormElement | undefined = $state();
 	let selectedUser: UserData | null = $state(null);
 	let deleteFormEl: HTMLFormElement;
 	let removeFromServerFormEl: HTMLFormElement;
@@ -80,6 +82,11 @@
 		onUpdated: ({ form }) => {
 			if (!form.valid) return;
 			selectedUser!.isActive = form.data.isActive;
+			if (!form.data.isActive) {
+				for (const server of data.servers) {
+					server.userIds = server.userIds.filter((id) => id !== form.data.userId);
+				}
+			}
 			toast.success(`User is now ${selectedUser!.isActive ? 'active' : 'inactive'}`);
 		}
 	});
@@ -164,6 +171,24 @@
 		isRemoveFromServerConfirmOpen = false;
 		pendingRemoveServerId = null;
 	}
+
+	function onSetInactiveClick(newValue: boolean) {
+		if (!newValue) {
+			isSetInactiveConfirmOpen = true;
+		} else {
+			isActiveFormEl?.requestSubmit();
+		}
+	}
+
+	function onConfirmSetInactive() {
+		isSetInactiveConfirmOpen = false;
+		isActiveFormEl?.requestSubmit();
+	}
+
+	function onCancelSetInactive() {
+		isSetInactiveConfirmOpen = false;
+		$isActiveFormData.isActive = true;
+	}
 </script>
 
 {#snippet userCard(user: UserData)}
@@ -188,7 +213,7 @@
 				<div class="flex gap-2"><Key /> {user.sshKeyData.length}</div>
 				<div class="flex gap-2">
 					<Server />
-					{data.servers.filter((s) => s.userIds.includes(user.id)).length}
+					{data.servers.filter((server) => server.userIds.includes(user.id)).length}
 				</div>
 			</Card.Footer>
 		</Card.Root>
@@ -232,13 +257,13 @@
 		<div class="flex flex-col gap-4 px-6 py-4">
 			{#if !selectedUser!.isSystemAdmin}
 				<div class="rounded-lg border p-4">
-					<form action="?/active" use:isActiveFormEnhance method="POST">
+					<form action="?/active" use:isActiveFormEnhance method="POST" bind:this={isActiveFormEl}>
 						<div class="flex items-center gap-3">
 							<Switch
 								id="isActive"
-								type="submit"
 								name="isActive"
 								bind:checked={$isActiveFormData.isActive}
+								onCheckedChange={onSetInactiveClick}
 							/>
 							<Label for="isActive" class="cursor-pointer font-medium">
 								{selectedUser!.isActive ? 'Active' : 'Inactive'}
@@ -365,4 +390,13 @@
 	confirmButtonText="Remove"
 	onConfirm={onConfirmRemoveFromServer}
 	onCancel={onCancelRemoveFromServer}
+/>
+<ConfirmationDialog
+	bind:open={isSetInactiveConfirmOpen}
+	title="Deactivate User"
+	description="Setting this user as inactive will remove them from all servers. Are you sure?"
+	isDestructive={true}
+	confirmButtonText="Deactivate"
+	onConfirm={onConfirmSetInactive}
+	onCancel={onCancelSetInactive}
 />
