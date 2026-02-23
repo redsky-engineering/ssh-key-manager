@@ -37,9 +37,21 @@
 		).length;
 	});
 
+	let staleServersCount = $derived(data.servers.length - activeServers.length);
+
 	function isServerActive(server: ServerData): boolean {
 		const staleTime = Date.now() - new Date(server.lastHeartbeatOn).getTime();
 		return staleTime < 3 * 60 * 1000;
+	}
+
+	function onNextServer() {
+		const index = data.servers.findIndex((server) => server.id === selectedServerId);
+		selectedServerId = data.servers[(index + 1) % data.servers.length].id;
+	}
+
+	function onPreviousServer() {
+		const index = data.servers.findIndex((server) => server.id === selectedServerId);
+		selectedServerId = data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
 	}
 
 	onMount(() => {
@@ -81,7 +93,7 @@
 				<Card.Root>
 					<Card.Header class="pb-2">
 						<Card.Description>Stale Servers</Card.Description>
-						<Card.Title class="text-3xl text-red-300">4</Card.Title>
+						<Card.Title class="text-3xl text-red-300">{staleServersCount}</Card.Title>
 					</Card.Header>
 					<Card.Content>
 						<div class="text-muted-foreground text-xs">2 new from last week</div>
@@ -100,12 +112,12 @@
 					</Card.Content>
 				</Card.Root>
 			</div>
-			<Tabs.Root value="all">
+			<Tabs.Root value="active">
 				<div class="flex items-center">
 					<Tabs.List>
-						<Tabs.Trigger value="all">All</Tabs.Trigger>
 						<Tabs.Trigger value="active">Active</Tabs.Trigger>
 						<Tabs.Trigger value="stale">Stale</Tabs.Trigger>
+						<Tabs.Trigger value="all">All</Tabs.Trigger>
 					</Tabs.List>
 					<div class="ml-auto flex items-center gap-2">
 						<Button size="sm" variant="outline" class="h-7 gap-1 text-sm">
@@ -130,15 +142,8 @@
 				<ServerInfoCard
 					serverInfo={data.servers.find((server) => server.id === selectedServerId) as ServerData}
 					users={data.users}
-					onNextServer={() => {
-						const index = data.servers.findIndex((server) => server.id === selectedServerId);
-						selectedServerId = data.servers[(index + 1) % data.servers.length].id;
-					}}
-					onPreviousServer={() => {
-						const index = data.servers.findIndex((server) => server.id === selectedServerId);
-						selectedServerId =
-							data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
-					}}
+					{onNextServer}
+					{onPreviousServer}
 					addUsersToServer={data.addUsersToServerForm.data}
 					deleteUserFromServer={data.deleteUserFromServerForm.data}
 				/>
@@ -173,7 +178,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each filteredServers as server}
+					{#each filteredServers as server (server.id)}
 						{@const serverActive = isServerActive(server)}
 						{#if state === 'all' || (state === 'active' && serverActive) || (state === 'stale' && !serverActive)}
 							<Table.Row

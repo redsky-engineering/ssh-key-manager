@@ -3,6 +3,7 @@
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Copy from '@lucide/svelte/icons/copy';
 	import Network from '@lucide/svelte/icons/network';
+	import Shield from '@lucide/svelte/icons/shield';
 	import Trash2 from '@lucide/svelte/icons/trash-2';
 
 	import AppUtils from '$lib/AppUtils.js';
@@ -19,7 +20,7 @@
 	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { z } from 'zod';
 
-	interface Props {
+	interface ServerInfoCardProps {
 		serverInfo: ServerData;
 		users: UserData[];
 		onNextServer: () => void;
@@ -35,9 +36,9 @@
 		onPreviousServer,
 		addUsersToServer,
 		deleteUserFromServer
-	}: Props = $props();
+	}: ServerInfoCardProps = $props();
 	let isAddToUsersDialogOpen = $state(false);
-	let userIdsToAdd = $state<number[]>([]);
+	let userIdsToAdd: number[] = $state([]);
 
 	const usersAvailableToAdd = $derived(
 		users.filter(
@@ -46,6 +47,18 @@
 				user.isActive &&
 				user.sshKeyData.length > 0
 		)
+	);
+
+	const serverUsers = $derived(
+		serverInfo.userIds
+			.map((userId) => users.find((user) => user.id === userId))
+			.filter((user): user is UserData => user !== undefined)
+			.sort((userA, userB) => {
+				if (userA.isSystemAdmin !== userB.isSystemAdmin) {
+					return userA.isSystemAdmin ? -1 : 1;
+				}
+				return userA.name.localeCompare(userB.name);
+			})
 	);
 
 	// svelte-ignore state_referenced_locally
@@ -83,11 +96,11 @@
 
 	let forms: HTMLFormElement[] = $state([]);
 
-	const handleDelete = (form: HTMLFormElement) => {
+	function onDelete(form: HTMLFormElement) {
 		if (form) {
 			form.requestSubmit();
 		}
-	};
+	}
 
 	$effect(() => {
 		$addUsersToServerFormData = { userIds: userIdsToAdd, serverId: serverInfo.id };
@@ -161,16 +174,15 @@
 			<Separator class="my-2" />
 			<div class="font-semibold">Users</div>
 			<ul class="grid gap-3">
-				{#each serverInfo.userIds as userId}
-					{#if users.find((user) => user.id === userId)}
-						{@const user = users.find((user) => user.id === userId)}
-						<li class="flex items-center justify-between">
-							<span class="text-muted-foreground">{user!.name}</span>
+				{#each serverUsers as user (user.id)}
+					<li class="flex items-center justify-between">
+						<span class="text-muted-foreground">{user.name}</span>
+						{#if !user.isSystemAdmin}
 							<form
 								action="?/delete-user-from-server"
 								method="POST"
 								use:deleteUserFromServerFormEnhance
-								bind:this={forms[user!.id]}
+								bind:this={forms[user.id]}
 							>
 								<Popover.Root>
 									<Popover.Trigger>
@@ -182,26 +194,26 @@
 										<Popover.Arrow class="fill-popover" />
 										<div class="space-y-2 p-3">
 											<p class="text-muted-foreground text-sm">
-												Are you sure you want to delete {user!.name} from {serverInfo.name}?
+												Are you sure you want to delete {user.name} from {serverInfo.name}?
 											</p>
 											<div class="flex justify-end gap-2">
 												<Popover.Close>
 													<Button variant="outline">Cancel</Button>
 												</Popover.Close>
-												{#if !user!.isSystemAdmin}
-													<Popover.Close>
-														<Button onclick={() => handleDelete(forms[user!.id])}>Delete</Button>
-													</Popover.Close>
-												{/if}
+												<Popover.Close>
+													<Button onclick={() => onDelete(forms[user.id])}>Delete</Button>
+												</Popover.Close>
 											</div>
 										</div>
 									</Popover.Content>
 								</Popover.Root>
 								<input type="hidden" name="serverId" value={serverInfo.id} />
-								<input type="hidden" name="userId" value={userId} />
+								<input type="hidden" name="userId" value={user.id} />
 							</form>
-						</li>
-					{/if}
+						{:else}
+							<Shield class="h-4 w-4 text-green-300" />
+						{/if}
+					</li>
 				{/each}
 				<Dialog.Root
 					onOpenChange={() => ($errors.userIds = undefined)}
@@ -224,7 +236,7 @@
 										type="multiple"
 										onValueChange={(selected: string[]) => {
 											if (selected) {
-												userIdsToAdd = selected.map((item) => parseInt(item));
+												userIdsToAdd = selected.map((idString) => parseInt(idString));
 											}
 										}}
 									>
@@ -235,7 +247,7 @@
 										</Select.Trigger>
 										<Select.Content>
 											<Select.Group>
-												{#each usersAvailableToAdd as user}
+												{#each usersAvailableToAdd as user (user.id)}
 													<Select.Item value={user.id.toString()} label={user.name}>
 														{user.name}
 													</Select.Item>
@@ -249,13 +261,8 @@
 									</span>{/if}
 							</Dialog.Header>
 							<Dialog.Footer class="gap-2">
-								{#each userIdsToAdd as _, index (index)}
-									<input
-										type="hidden"
-										name="userIds"
-										bind:value={userIdsToAdd[index]}
-										{...$constraints.userIds}
-									/>
+								{#each userIdsToAdd as userId (userId)}
+									<input type="hidden" name="userIds" value={userId} {...$constraints.userIds} />
 								{/each}
 								<input type="hidden" name="serverId" value={serverInfo.id} />
 								<Button

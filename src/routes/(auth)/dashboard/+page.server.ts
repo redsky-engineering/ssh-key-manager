@@ -17,7 +17,7 @@ export const actions: Actions = {
 		const server = simpleDb.getServer(form.data.serverId);
 		if (!server) return message(form, 'Server not found', { status: 404 });
 
-		simpleDb.updateServer(form.data.serverId, { userIds: [...server.userIds, ...userIds] });
+		await simpleDb.updateServer(form.data.serverId, { userIds: [...server.userIds, ...userIds] });
 
 		return { form };
 	},
@@ -25,8 +25,6 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod4(deleteUserFromServerSchema));
 
 		if (!form.valid) return fail(400, { form });
-
-		console.log('form.data', form.data.userId);
 
 		const user = simpleDb.getUser(form.data.userId);
 		if (!user) return message(form, 'User not found', { status: 404 });
@@ -37,7 +35,7 @@ export const actions: Actions = {
 		const server = simpleDb.getServer(form.data.serverId);
 		if (!server) return message(form, 'Server not found', { status: 404 });
 
-		simpleDb.updateServer(form.data.serverId, {
+		await simpleDb.updateServer(form.data.serverId, {
 			userIds: server.userIds.filter((id) => id !== form.data.userId)
 		});
 		return { form };

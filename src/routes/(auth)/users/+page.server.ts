@@ -21,12 +21,11 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod4(userNameSchema));
 
 		if (!form.valid) return fail(400, { form });
-		console.log('form.data', form.data);
 
 		const user = simpleDb.getUser(form.data.userId);
 		if (!user) return message(form, 'User not found', { status: 404 });
 
-		simpleDb.updateUser(form.data.userId, { name: form.data.name });
+		await simpleDb.updateUser(form.data.userId, { name: form.data.name });
 
 		return { form };
 	},
@@ -56,7 +55,6 @@ export const actions: Actions = {
 		const form = await superValidate(request, zod4(addSshKeySchema));
 
 		if (!form.valid) return fail(400, { form });
-		console.log('form.data', form.data);
 
 		const user = simpleDb.getUser(form.data.userId);
 		if (!user) return message(form, 'User not found', { status: 404 });
@@ -65,7 +63,7 @@ export const actions: Actions = {
 			return message(form, 'Invalid SSH Key', { status: 400 });
 		}
 
-		simpleDb.updateUser(form.data.userId, {
+		await simpleDb.updateUser(form.data.userId, {
 			sshKeyData: [
 				...user.sshKeyData,
 				{
@@ -92,7 +90,7 @@ export const actions: Actions = {
 			return message(form, 'User not a member of server', { status: 400 });
 		}
 
-		simpleDb.updateServer(form.data.serverId, {
+		await simpleDb.updateServer(form.data.serverId, {
 			userIds: server.userIds.filter((id) => id !== form.data.userId)
 		});
 
@@ -100,10 +98,8 @@ export const actions: Actions = {
 	},
 	'delete-ssh-key': async ({ request }) => {
 		const form = await superValidate(request, zod4(deleteSshKeySchema));
-		console.log('form', form);
 
 		if (!form.valid) return fail(400, { form });
-		console.log('form.data', form.data);
 
 		const user = simpleDb.getUser(form.data.userId);
 		if (!user) return message(form, 'User not found', { status: 404 });
@@ -112,7 +108,7 @@ export const actions: Actions = {
 		const keyToDelete = user.sshKeyData.find((key) => key.fingerPrint === form.data.fingerprint);
 		if (!keyToDelete) return message(form, 'Key not found', { status: 404 });
 
-		simpleDb.updateUser(form.data.userId, {
+		await simpleDb.updateUser(form.data.userId, {
 			sshKeyData: user.sshKeyData.filter((key) => key.fingerPrint !== form.data.fingerprint)
 		});
 
