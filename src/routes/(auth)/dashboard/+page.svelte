@@ -39,6 +39,10 @@
 
 	let staleServersCount = $derived(data.servers.length - activeServers.length);
 
+	onMount(() => {
+		selectedServerId = data.servers.length > 0 ? data.servers[0].id : null;
+	});
+
 	function isServerActive(server: ServerData): boolean {
 		const staleTime = Date.now() - new Date(server.lastHeartbeatOn).getTime();
 		return staleTime < 3 * 60 * 1000;
@@ -53,10 +57,6 @@
 		const index = data.servers.findIndex((server) => server.id === selectedServerId);
 		selectedServerId = data.servers[(index - 1 + data.servers.length) % data.servers.length].id;
 	}
-
-	onMount(() => {
-		selectedServerId = data.servers.length > 0 ? data.servers[0].id : null;
-	});
 </script>
 
 <div class="flex flex-col gap-4 p-4">
